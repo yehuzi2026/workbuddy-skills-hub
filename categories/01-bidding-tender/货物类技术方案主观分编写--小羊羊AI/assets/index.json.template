@@ -1,0 +1,91 @@
+{
+  "_说明": "行业图库图片目录。维护方式：每新增一张图片，在images数组中追加一条记录。必填字段：id, file, title, category, fit_sections, fit_content_keywords。",
+  "_图库根路径": "请修改为你的实际路径，例如 E:/行业图库",
+  "library_root": "E:/行业图库",
+  "images": [
+    {
+      "_示例1": "生产设备类图片",
+      "id": "img_001",
+      "file": "01-生产设备/自动化生产线.jpg",
+      "title": "自动化生产线",
+      "description": "我公司SMT全自动贴片生产线",
+      "category": "生产设备",
+      "tags": ["生产线", "自动化", "SMT"],
+      "fit_sections": ["供货组织方案", "生产实施方案", "质量保证方案"],
+      "fit_content_keywords": ["生产线", "产能", "制造", "生产工艺", "出厂"],
+      "recommended_size": {"width_cm": 14, "height_cm": 8}
+    },
+    {
+      "_示例2": "品质检测类图片",
+      "id": "img_002",
+      "file": "02-品质检测/质检实验室全景.jpg",
+      "title": "质检实验室全景",
+      "description": "ISO 17025认可实验室",
+      "category": "品质检测",
+      "tags": ["质检", "实验室", "检测"],
+      "fit_sections": ["质量保证方案", "验收方案"],
+      "fit_content_keywords": ["质检", "检测", "合格率", "出厂检验"],
+      "recommended_size": {"width_cm": 14, "height_cm": 8}
+    },
+    {
+      "_示例3": "仓储物流类图片",
+      "id": "img_003",
+      "file": "03-仓储物流/立体仓库.jpg",
+      "title": "自动化立体仓库",
+      "description": "5000平方米立体仓库",
+      "category": "仓储物流",
+      "tags": ["仓库", "物流", "库存"],
+      "fit_sections": ["供货组织方案", "包装运输方案"],
+      "fit_content_keywords": ["仓储", "库存", "物流", "配送", "包装"],
+      "recommended_size": {"width_cm": 14, "height_cm": 8}
+    },
+    {
+      "_示例4": "企业资质类图片",
+      "id": "img_004",
+      "file": "04-企业资质/ISO9001证书.jpg",
+      "title": "ISO9001质量管理体系认证证书",
+      "description": "有效期至2027年",
+      "category": "企业资质",
+      "tags": ["ISO", "证书", "质量管理"],
+      "fit_sections": ["质量保证方案", "企业实力"],
+      "fit_content_keywords": ["ISO", "认证", "质量管理体系", "资质"],
+      "recommended_size": {"width_cm": 10, "height_cm": 14}
+    },
+    {
+      "_示例5": "案例照片类图片",
+      "id": "img_005",
+      "file": "05-案例照片/某大学洗衣房项目.jpg",
+      "title": "XX大学共享洗衣房项目实景",
+      "description": "已建成运营3年，日均使用1200次",
+      "category": "案例照片",
+      "tags": ["案例", "洗衣房", "BOT", "大学"],
+      "fit_sections": ["项目运营方案", "投资建设方案", "类似项目业绩"],
+      "fit_content_keywords": ["案例", "运营", "洗衣", "共享", "BOT", "业绩"],
+      "recommended_size": {"width_cm": 14, "height_cm": 9}
+    },
+    {
+      "_示例6": "团队风采类图片",
+      "id": "img_006",
+      "file": "06-团队风采/技术团队合影.jpg",
+      "title": "核心技术团队",
+      "description": "12人技术团队，平均从业经验8年",
+      "category": "团队风采",
+      "tags": ["团队", "技术", "工程师"],
+      "fit_sections": ["安装调试方案", "培训方案", "项目团队"],
+      "fit_content_keywords": ["团队", "工程师", "技术人员", "施工"],
+      "recommended_size": {"width_cm": 14, "height_cm": 8}
+    },
+    {
+      "_示例7": "售后服务类图片",
+      "id": "img_007",
+      "file": "07-售后服务/客服中心.jpg",
+      "title": "24小时客户服务中心",
+      "description": "8人客服团队，全年无休",
+      "category": "售后服务",
+      "tags": ["客服", "售后", "维修"],
+      "fit_sections": ["售后服务方案", "维修维护方案", "客户投诉处理方案"],
+      "fit_content_keywords": ["售后", "客服", "维修", "响应", "服务"],
+      "recommended_size": {"width_cm": 14, "height_cm": 8}
+    }
+  ]
+}

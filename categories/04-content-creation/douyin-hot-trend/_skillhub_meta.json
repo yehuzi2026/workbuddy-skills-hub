@@ -1,0 +1,13 @@
+{
+  "name": "抖音热榜",
+  "installedAt": 1785989503808,
+  "source": "marketplace",
+  "version": "1.0.1",
+  "skillId": "skill_2084833903682375680",
+  "description_zh": "获取抖音实时热榜TOP50，支持历史回溯与定时推送",
+  "description_en": "Fetch real-time Douyin trending topics with historical lookup and scheduled push",
+  "iconSource": "https://openplatform-cdn.codebuddy.cn/public/9f40ec1e-e8c9-4dca-ace6-b634b3c73991/avatar/skill/au_c9cc7b26-266.svg",
+  "iconLocalPath": "C:\\Users\\AHS\\.workbuddy\\skills\\douyin-hot-trend\\_icon.svg",
+  "iconDownloadedFrom": "https://openplatform-cdn.codebuddy.cn/public/9f40ec1e-e8c9-4dca-ace6-b634b3c73991/avatar/skill/au_c9cc7b26-266.svg",
+  "installedContentHash": "sha256:9d362776092a5c68f5da5d4d0f9e93c4bc388371fcd0b6198e13d8b306cb2365"
+}

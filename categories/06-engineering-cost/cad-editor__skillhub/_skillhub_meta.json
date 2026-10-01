@@ -1,0 +1,11 @@
+{
+  "slug": "cad-editor",
+  "name": "CAD Editor",
+  "version": "1.0.6",
+  "installedAt": 1786507950042,
+  "source": "skillhub",
+  "iconSource": "https://cloudcache.tencent-cloud.com/qcloud/ui/static/other_external_resource/64ea6fd6-ebe7-418c-af4f-2cafff71f2ec.png",
+  "iconLocalPath": "C:\\Users\\AHS\\.workbuddy\\skills\\cad-editor__skillhub\\_icon.png",
+  "iconDownloadedFrom": "https://cloudcache.tencent-cloud.com/qcloud/ui/static/other_external_resource/64ea6fd6-ebe7-418c-af4f-2cafff71f2ec.png",
+  "installedContentHash": "sha256:39a0e57b013465db76d98d82165a8833be1c8947e2e26e1c4d9dade5d2cdfa0e"
+}

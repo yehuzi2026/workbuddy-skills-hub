@@ -1,0 +1,606 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+WorkBuddy 迁移包一键生成器
+=========================================================
+把 AI 助手的全部"成长"打包到桌面，供复制到新电脑一键恢复。
+
+用法:
+  python make_pack.py                      # 全量（含工作区 zip，约 1-2 分钟）
+  python make_pack.py --skip-workspace     # 快速版（不含项目工作区，约 20 秒）
+  python make_pack.py --date 2026-09-20    # 指定日期（默认今天）
+  python make_pack.py --out "D:\\备份"      # 指定输出目录（默认桌面）
+  python make_pack.py --keep-old           # 保留桌面其他日期的旧包（默认清理）
+
+产出:
+  <out>/WorkBuddy迁移包-<日期>/
+    ⭐先看这里-换电脑恢复指引.md
+    restore-new-pc.sh          （命令行一键恢复）
+    双击我-一键恢复.bat         （GBK，双击即用，自动找 Git Bash）
+    01-身份与记忆/ 02-技能库/ 03-配置与连接/
+    04-自动化任务/ 05-会话历史（sessions 索引 + projects 对话正文）/ 06-项目工作区-可选/
+"""
+import argparse
+import datetime
+import os
+import shutil
+import sqlite3
+import stat
+import sys
+import zipfile
+from pathlib import Path
+
+HOME = Path.home()
+H = HOME / ".workbuddy"
+WORKSPACE = HOME / "WorkBuddy"
+
+PKG_PREFIX = "WorkBuddy迁移包-"
+
+README_TPL = r"""# ⭐ 换电脑 · WorkBuddy 完整迁移指引（{{DATE}} 最新版）
+
+> 这个文件夹 = **你的 AI 助手的全部"灵魂、技能与成长记忆"**（{{DATE}} 最新快照）。
+> 把它整个拷到新电脑，双击一个 bat，我就"活"过去了。
+
+---
+
+## 📦 包里有什么
+
+| 目录 | 内容 | 是否必拷 |
+|---|---|---|
+| `01-身份与记忆/` | SOUL / IDENTITY / USER + 记忆档案（服务端最新完整档案 + 本地版 + memory 缓存） | ✅ 必须 |
+| `02-技能库/` | **{{SKILL_COUNT}} 个技能目录**（标书体系、爬虫、OCR、价格分析、公众号等全部成长） | ✅ 必须 |
+| `03-配置与连接/` | mcp.json、连接器（GitHub/CloudBase/邮箱等）、凭据、本地登录态 | ✅ 必须 |
+| `04-自动化任务/` | workbuddy.db（**{{AUTO_COUNT}} 个定时自动化**，一致性备份） | ✅ 必须 |
+| `05-会话历史/` | 会话索引 **+ 对话正文**（`projects/<工作区>/<会话id>.jsonl`） | ✅ 必须 |
+| `06-项目工作区-可选/` | 全部历史项目压缩包 + 目录清单 | ⭕ 建议 |
+| `restore-new-pc.sh` | 命令行一键恢复脚本 | ✅ 用这个 |
+| `双击我-一键恢复.bat` | **双击即用**启动器，自动找 Git Bash，无需任何安装 | ✅ 推荐 |
+
+---
+
+## 🚀 新电脑恢复步骤（共 5 步）
+
+### 第 1 步：装 WorkBuddy 并登录【原账号】
+在新电脑安装 WorkBuddy，用**和现在同一个账号**登录，随便打开一次。
+（这样会自动生成 `C:\Users\你的用户名\.workbuddy\` 目录；**登录同一账号**是云端记忆能继续同步的前提）
+
+### 第 2 步：把这个文件夹整个拷过去
+U 盘 / 微信文件传输 / 网盘都行，整个文件夹原样拷贝（放桌面最方便）。
+
+### 第 3 步：完全退出 WorkBuddy
+任务栏图标右键退出（恢复数据库时必须处于关闭状态）。
+
+### 第 4 步：执行一键恢复（两种方式，任选其一）
+
+**方式 A ✅ 最省事：双击 `双击我-一键恢复.bat`**
+不用装任何东西。启动器会自动找到 WorkBuddy 自带的 Git Bash（或系统 Git），直接跑恢复流程。
+
+**方式 B：Git Bash 命令行**
+```bash
+cd /c/Users/你的用户名/Desktop/{{PKG_NAME}}
+bash restore-new-pc.sh
+```
+
+脚本会自动：备份新电脑旧数据 → 恢复身份/记忆 → 恢复技能库 → 恢复 MCP 与连接器 → 恢复自动化任务库 → 解压项目工作区。
+
+> 💡 **Git Bash 需要单独安装吗？不需要。**
+> WorkBuddy 自带一份 Git Bash（在 `C:\Users\你的用户名\.workbuddy\binaries\PortableGit\`），
+> 装了 WorkBuddy 就一定有。方式 A 的 bat 会自动定位它，所以你什么都不用管。
+> 实在两种方式都用不了，兜底方案：把 `01/02/03/04/05` 各目录内容对照拷进
+> `C:\Users\你的用户名\.workbuddy\` 对应位置（效果一样，就是慢点）。
+
+### 第 5 步：重开 WorkBuddy，确认四件事
+1. ✅ 我认识你（记忆档案已就位，云端还会自动更新到最新）
+2. ✅ 技能可用（对话中按关键词自动触发，如"做标书"）
+3. 🔧 MCP/连接器：到**连接器管理**页，把 GitHub / 腾讯云 CloudBase / 智能体邮箱 重新点**「信任」**
+4. 🔧 自动化任务：在自动化页面检查状态（{{AUTO_COUNT}} 个任务原样保留）
+
+---
+
+## ⚠️ 安全提醒（重要）
+
+- 本包 `03-配置与连接/` 内含**登录凭据与令牌**，技能/记忆档案也含部分账号密钥信息。
+- **只通过你自己可控的通道传输**（U盘、私人网盘、加密压缩），不要发到公共群/聊天工具。
+- 恢复完成后，建议删除多余的中间副本。
+
+---
+
+## 📌 以后想刷新这个包
+
+直接对 AI 说：
+> "重新生成迁移包"
+
+会按同一流程生成新日期版本并放在桌面，旧的清理掉。
+"""
+
+RESTORE_TPL = r"""#!/bin/bash
+# ============================================================
+# WorkBuddy 一键恢复脚本（新电脑专用） · {{DATE}}
+# 用法：把整个迁移包文件夹拷到新电脑，在 Git Bash 中运行：
+#         bash restore-new-pc.sh
+# 前提：新电脑已安装 WorkBuddy，用【同一账号】登录并打开过一次
+# ============================================================
+
+set -e
+
+# ---- PATH 自愈：确保 cp/ls/read 等核心命令始终可用 ----
+export PATH="/usr/bin:/bin:$PATH"
+
+PKG_DIR="$(cd "$(dirname "$0")" && pwd)"
+H="$HOME/.workbuddy"
+TS="$(date +%Y%m%d%H%M%S)"
+
+echo "=============================================="
+echo "  WorkBuddy 恢复（迁移包 {{DATE}}）"
+echo "  包目录: ${PKG_DIR}"
+echo "  目标:   ${H}"
+echo "=============================================="
+
+# ---- 0. 前置检查 ----
+if [ ! -d "$H" ]; then
+    echo "[错误] 未找到 ~/.workbuddy/ 目录"
+    echo "请先在新电脑安装 WorkBuddy，登录【原账号】，打开一次后再运行本脚本。"
+    exit 1
+fi
+echo "[提示] 恢复前请先完全退出 WorkBuddy 程序。"
+echo "       若尚未退出，请现在退出；确认后按 Enter 继续，Ctrl+C 可取消..."
+read -r _
+
+# ---- 0.5 旧数据保险 ----
+BK="$H/_pre-restore-backup-$TS"
+if [ -f "$H/MEMORY.md" ] || [ -d "$H/skills" ]; then
+    mkdir -p "$BK"
+    cp -r "$H"/SOUL.md "$H"/IDENTITY.md "$H"/USER.md "$H"/MEMORY.md "$BK/" 2>/dev/null || true
+    [ -d "$H/skills" ] && cp -r "$H/skills" "$BK/"
+    [ -f "$H/mcp.json" ] && cp "$H/mcp.json" "$BK/"
+    echo "[信息] 新电脑原有数据已备份到 $BK"
+fi
+
+echo ""
+echo "[1/6] 恢复身份与记忆..."
+for f in SOUL.md IDENTITY.md USER.md MEMORY.md; do
+    if [ -f "$PKG_DIR/01-身份与记忆/$f" ]; then
+        cp "$PKG_DIR/01-身份与记忆/$f" "$H/$f"
+        echo "  -> $f"
+    fi
+done
+# 若包内只有「MEMORY-最新完整档案-*.md」，把它作为权威记忆写入 MEMORY.md
+if [ ! -f "$PKG_DIR/01-身份与记忆/MEMORY.md" ]; then
+    LATEST=$(ls "$PKG_DIR/01-身份与记忆/"MEMORY-最新完整档案-*.md 2>/dev/null | head -1)
+    if [ -n "$LATEST" ]; then
+        cp "$LATEST" "$H/MEMORY.md"
+        echo "  -> MEMORY.md（采用 $(basename "$LATEST")）"
+    fi
+fi
+mkdir -p "$H/memory"
+cp -r "$PKG_DIR/01-身份与记忆/memory-缓存/"* "$H/memory/" 2>/dev/null || true
+echo "  -> memory 缓存已并入"
+
+echo ""
+echo "[2/6] 恢复技能库..."
+if [ -d "$PKG_DIR/02-技能库/skills" ]; then
+    mkdir -p "$H/skills"
+    cp -rf "$PKG_DIR/02-技能库/skills/"* "$H/skills/"
+    N=$(ls -d "$H/skills/"*/ 2>/dev/null | wc -l)
+    echo "  -> 已恢复 $N 个技能"
+fi
+
+echo ""
+echo "[3/6] 恢复配置与连接..."
+C="$PKG_DIR/03-配置与连接"
+for d in connectors credentials automation-backups local_storage; do
+    [ -d "$C/$d" ] && cp -rf "$C/$d" "$H/"
+done
+for f in mcp.json mcp-approvals.json models.json; do
+    [ -f "$C/$f" ] && cp "$C/$f" "$H/$f"
+done
+echo "  -> mcp.json / connectors / credentials 等已恢复"
+echo "  [注意] MCP 与连接器需在新电脑的「连接器管理」页面重新点『信任』"
+
+echo ""
+echo "[4/6] 恢复自动化任务库..."
+if [ -f "$PKG_DIR/04-自动化任务/workbuddy.db" ]; then
+    cp "$PKG_DIR/04-自动化任务/workbuddy.db" "$H/workbuddy.db"
+    echo "  -> workbuddy.db（{{AUTO_COUNT}} 个自动化任务等本地库）已恢复"
+fi
+
+echo ""
+echo "[5/6] 恢复会话历史索引与对话正文..."
+[ -d "$PKG_DIR/05-会话历史/sessions" ] && cp -rf "$PKG_DIR/05-会话历史/sessions" "$H/"
+echo "  -> sessions 索引已恢复"
+
+# 对话正文 = projects/<工作区目录名>/<会话id>.jsonl
+# 目录名由工作区完整路径派生（c-Users-<用户名>-WorkBuddy-...），
+# 换机器后必须把目录名里的老用户名替换为本机用户名，否则正文永远加载不到。
+if [ -d "$PKG_DIR/05-会话历史/projects" ]; then
+    mkdir -p "$H/projects"
+    cp -rf "$PKG_DIR/05-会话历史/projects/." "$H/projects/"
+    NEWU=$(basename "$HOME")
+    for d in "$H/projects"/*; do
+        [ -d "$d" ] || continue
+        b=$(basename "$d")
+        nb=$(printf '%s' "$b" | sed -E 's/^c-Users-[^-]+-WorkBuddy-/c-Users-'"$NEWU"'-WorkBuddy-/')
+        if [ "$nb" != "$b" ]; then
+            if [ -d "$H/projects/$nb" ]; then
+                cp -rf "$d/." "$H/projects/$nb/" && mv -f "$d" "$H/projects/oldname-$(basename "$d")"
+            else
+                mv -f "$d" "$H/projects/$nb"
+            fi
+            echo "     正文目录适配: $b -> $nb"
+        fi
+    done
+    echo "  -> 对话正文已恢复（$(ls "$H/projects" 2>/dev/null | wc -l) 个工作区）"
+else
+    echo "  [提示] 包内无对话正文（这是旧版迁移包；会话标题可见但正文缺失）"
+fi
+
+echo ""
+echo "[6/6] 恢复项目工作区..."
+ZIP="$PKG_DIR/06-项目工作区-可选/{{ZIP_NAME}}"
+if [ -f "$ZIP" ]; then
+    mkdir -p "$HOME/WorkBuddy"
+    if command -v unzip >/dev/null 2>&1; then
+        unzip -qo "$ZIP" -d "$HOME/"
+    else
+        echo "  [提示] 系统无 unzip 命令，请手动把 06 目录里的 zip 解压到 $HOME/WorkBuddy"
+    fi
+    echo "  -> 项目工作区已解压到 $HOME/WorkBuddy"
+else
+    echo "  -> 包内未包含项目工作区，已跳过"
+fi
+
+echo ""
+echo "=============================================="
+echo "  恢复完成！接下来："
+echo "  1. 重新打开 WorkBuddy（同一账号）"
+echo "  2. 技能会自动被识别；MCP/连接器去『连接器管理』重新点信任"
+echo "  3. 自动化任务请在对应页面检查状态"
+echo "  4. 云端记忆会随登录自动更新到最新"
+echo "  你的 AI 助手已在新电脑复活。"
+echo "=============================================="
+"""
+
+LAUNCHER_TPL = r"""@echo off
+chcp 936 >nul
+title WorkBuddy 换电脑一键恢复（迁移包 {{DATE}}）
+cd /d "%~dp0"
+
+echo ============================================================
+echo    WorkBuddy 换电脑恢复 - 迁移包 {{DATE}}
+echo ============================================================
+echo.
+echo  [前提] 新电脑已安装 WorkBuddy，用原账号登录并打开过一次
+echo  [前提] 现在请先完全退出 WorkBuddy 程序
+echo.
+echo  按任意键开始恢复，直接关窗口可取消...
+pause >nul
+
+REM ---------- 自动定位可用的 bash：优先 WorkBuddy 自带 Git ----------
+set "BASH="
+if exist "%USERPROFILE%\.workbuddy\binaries\PortableGit\versions\current\bin\bash.exe" set "BASH=%USERPROFILE%\.workbuddy\binaries\PortableGit\versions\current\bin\bash.exe"
+if not defined BASH if exist "%USERPROFILE%\.workbuddy\binaries\PortableGit\bin\bash.exe" set "BASH=%USERPROFILE%\.workbuddy\binaries\PortableGit\bin\bash.exe"
+if not defined BASH for /d %%D in ("%USERPROFILE%\.workbuddy\binaries\PortableGit\versions\*") do if exist "%%~fD\bin\bash.exe" set "BASH=%%~fD\bin\bash.exe"
+if not defined BASH if exist "C:\Program Files\Git\bin\bash.exe" set "BASH=C:\Program Files\Git\bin\bash.exe"
+if not defined BASH if exist "C:\Program Files (x86)\Git\bin\bash.exe" set "BASH=C:\Program Files (x86)\Git\bin\bash.exe"
+
+if not defined BASH (
+  echo.
+  echo  [未找到 Git Bash] 请先确认：
+  echo    1^) WorkBuddy 已安装，且至少打开过一次
+  echo    2^) 或改用本文件夹内的「手动恢复说明」逐步复制
+  echo.
+  pause
+  exit /b 1
+)
+
+echo.
+echo  使用 Git Bash: %BASH%
+echo.
+set LC_ALL=C.UTF-8
+"%BASH%" restore-new-pc.sh
+
+echo.
+echo ============================================================
+echo  执行结束。按任意键关闭窗口。
+echo ============================================================
+pause >nul
+"""
+
+
+def log(msg):
+    print(msg, flush=True)
+
+
+def copy_tree(src: Path, dst: Path):
+    if src.is_dir():
+        shutil.copytree(src, dst, dirs_exist_ok=True)
+    elif src.is_file():
+        dst.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copy2(src, dst)
+
+
+def clear_readonly(root: Path) -> int:
+    """递归清除只读属性。技能目录里的 .git 对象文件默认只读，
+    会阻断目录重命名与覆盖复制（WinError 5 拒绝访问的常见真因）。"""
+    cnt = 0
+    for r, dirs, files in os.walk(root):
+        for name in dirs + files:
+            p = os.path.join(r, name)
+            try:
+                os.chmod(p, stat.S_IWRITE)
+                cnt += 1
+            except Exception:
+                pass
+    return cnt
+
+
+def backup_db(src: Path, dst: Path) -> int:
+    """SQLite 一致性备份（应用运行中安全），返回 automations 表行数"""
+    con = sqlite3.connect(str(src))
+    try:
+        dst.parent.mkdir(parents=True, exist_ok=True)
+        b = sqlite3.connect(str(dst))
+        con.backup(b)
+        b.close()
+        try:
+            cnt = con.execute("SELECT COUNT(*) FROM automations").fetchone()[0]
+        except Exception:
+            cnt = 0
+        return cnt
+    finally:
+        con.close()
+
+
+def make_workspace_zip(ws: Path, dst_zip: Path):
+    """把整个工作区打成 zip（arcname 从 WorkBuddy/ 开始，解压到 $HOME）"""
+    files = [p for p in ws.rglob("*") if p.is_file()]
+    total = len(files)
+    with zipfile.ZipFile(dst_zip, "w", zipfile.ZIP_DEFLATED, compresslevel=6) as z:
+        for i, p in enumerate(files, 1):
+            z.write(p, arcname=str(Path("WorkBuddy") / p.relative_to(ws)))
+            if i % 500 == 0 or i == total:
+                log(f"    压缩进度 {i}/{total}")
+    return total
+
+
+def workspace_manifest(ws: Path, out_txt: Path):
+    rows = []
+    for d in sorted(ws.iterdir()):
+        if not d.is_dir():
+            continue
+        size = sum(f.stat().st_size for f in d.rglob("*") if f.is_file())
+        rows.append((size, d.name))
+    rows.sort(reverse=True)
+    lines = [f"{s/1048576:8.1f} MB  {n}/" for s, n in rows]
+    out_txt.write_text("\n".join(lines) + "\n", encoding="utf-8")
+    log(f"    工作区目录清单: {len(rows)} 个项目")
+
+
+def main():
+    ap = argparse.ArgumentParser(description="生成 WorkBuddy 换电脑迁移包")
+    ap.add_argument("--date", default=datetime.date.today().isoformat())
+    ap.add_argument("--skip-workspace", action="store_true", help="不打包项目工作区（快）")
+    ap.add_argument("--out", default=str(HOME / "Desktop"), help="输出根目录（默认桌面）")
+    ap.add_argument("--clean-old-packs", action="store_true",
+                    help="尝试删除其他日期的旧迁移包（默认只提示不删，受管环境批量删除会被安全护栏拦截）")
+    args = ap.parse_args()
+
+    date = args.date
+    out_root = Path(args.out)
+    pkg_name = f"{PKG_PREFIX}{date}"
+    pkg = out_root / pkg_name
+
+    if not H.is_dir():
+        log(f"[错误] 未找到 {H}")
+        return 1
+
+    # 统计
+    skill_dirs = [d for d in (H / "skills").iterdir() if d.is_dir()] if (H / "skills").is_dir() else []
+    skill_count = len(skill_dirs)
+    log(f"== 生成 {pkg_name} ==")
+    log(f"   技能目录: {skill_count}")
+
+    # 其他日期的旧包：默认只提示（批量删除会被安全护栏拦截，需用户确认）
+    stamp = datetime.datetime.now().strftime("%H%M%S")
+    stale = [d for d in out_root.glob(f"{PKG_PREFIX}*")
+             if d.is_dir() and d.name != pkg_name
+             and ".building-" not in d.name and ".old-" not in d.name]
+    if stale:
+        if args.clean_old_packs:
+            for old in stale:
+                try:
+                    shutil.rmtree(old)
+                    log(f"   已清理旧包: {old.name}")
+                except Exception:
+                    log(f"   [提示] 旧包 {old.name} 未能自动删除，请手动删除")
+        else:
+            for old in stale:
+                log(f"   [提示] 桌面还有其他日期的包: {old.name}（确认后可手动删除）")
+
+    # 先构建到临时目录，最后原子替换，避免中途破坏已有包
+    build = out_root / f"{pkg_name}.building-{stamp}"
+    if build.exists():
+        shutil.rmtree(build, ignore_errors=True)
+    for sub in ["01-身份与记忆/memory-缓存", "02-技能库", "03-配置与连接",
+                "04-自动化任务", "05-会话历史/projects", "06-项目工作区-可选"]:
+        (build / sub).mkdir(parents=True, exist_ok=True)
+    pkg = build  # 以下全部写入 build，收尾时统一替换为正式目录
+
+    # ---- 1. 身份与记忆 ----
+    log("[1/6] 身份与记忆")
+    for f in ["SOUL.md", "IDENTITY.md", "USER.md"]:
+        if (H / f).is_file():
+            shutil.copy2(H / f, pkg / "01-身份与记忆" / f)
+    if (H / "MEMORY.md").is_file():
+        shutil.copy2(H / "MEMORY.md", pkg / "01-身份与记忆" / "MEMORY-本地版.md")
+    # 服务端用户记忆档案（通常最新），解析其 Last updated 日期做文件名
+    mem_files = sorted((H / "memory").glob("*_memory.md")) if (H / "memory").is_dir() else []
+    if mem_files:
+        latest_mem = mem_files[0]
+        mem_stamp = "latest"
+        try:
+            for line in latest_mem.read_text(encoding="utf-8", errors="ignore").splitlines()[:8]:
+                if "Last updated" in line:
+                    mem_stamp = line.split("Last updated:")[1].strip()[:10]
+                    break
+        except Exception:
+            pass
+        shutil.copy2(latest_mem, pkg / "01-身份与记忆" / f"MEMORY-最新完整档案-{mem_stamp}.md")
+        for m in mem_files:
+            shutil.copy2(m, pkg / "01-身份与记忆" / "memory-缓存" / m.name)
+        log(f"   记忆档案: {latest_mem.name}（stamp={mem_stamp}）")
+
+    # ---- 2. 技能库 ----
+    log("[2/6] 技能库")
+    copy_tree(H / "skills", pkg / "02-技能库" / "skills")
+
+    # ---- 3. 配置与连接 ----
+    log("[3/6] 配置与连接")
+    for d in ["connectors", "credentials", "automation-backups", "local_storage"]:
+        if (H / d).is_dir():
+            copy_tree(H / d, pkg / "03-配置与连接" / d)
+    for f in ["mcp.json", "mcp-approvals.json", "models.json"]:
+        if (H / f).is_file():
+            shutil.copy2(H / f, pkg / "03-配置与连接" / f)
+
+    # ---- 4. 自动化任务库（一致性备份）----
+    log("[4/6] 自动化任务库")
+    auto_count = 0
+    if (H / "workbuddy.db").is_file():
+        auto_count = backup_db(H / "workbuddy.db", pkg / "04-自动化任务" / "workbuddy.db")
+        log(f"   自动化任务数: {auto_count}")
+
+    # ---- 5. 会话历史（索引 + 对话正文）----
+    log("[5/6] 会话历史")
+    if (H / "sessions").is_dir():
+        copy_tree(H / "sessions", pkg / "05-会话历史" / "sessions")
+
+    # 对话正文：projects/<工作区目录名>/<会话id>.jsonl
+    # 只打 sessions/ 是不够的 —— sessions/ 只是 CLI 主机注册表（不含任何聊天内容），
+    # 缺了 projects/ 新电脑就只能看到会话标题、点进去一片空白。
+    body_files = 0
+    body_bytes = 0
+    if (H / "projects").is_dir():
+        copy_tree(H / "projects", pkg / "05-会话历史" / "projects")
+        for dp, _dns, fns in os.walk(H / "projects"):
+            for fn in fns:
+                body_files += 1
+                try:
+                    body_bytes += os.path.getsize(os.path.join(dp, fn))
+                except OSError:
+                    pass
+        log(f"   对话正文: {body_files} 个文件 / {body_bytes / 1048576:.1f} MB")
+    else:
+        log("   [警告] 未找到 ~/.workbuddy/projects，本包将不含对话正文")
+
+    # ---- 6. 项目工作区 ----
+    zip_name = f"workbuddy-workspace-{date}.zip"
+    log("[6/6] 项目工作区")
+    if WORKSPACE.is_dir():
+        workspace_manifest(WORKSPACE, pkg / "06-项目工作区-可选" / "工作区目录清单.txt")
+        if args.skip_workspace:
+            log("   已跳过工作区打包（--skip-workspace）")
+        else:
+            n = make_workspace_zip(WORKSPACE, pkg / "06-项目工作区-可选" / zip_name)
+            log(f"   已打包 {n} 个文件 -> {zip_name}")
+
+    # ---- 文档与脚本 ----
+    repl = {
+        "{{DATE}}": date,
+        "{{PKG_NAME}}": pkg_name,
+        "{{SKILL_COUNT}}": str(skill_count),
+        "{{AUTO_COUNT}}": str(auto_count),
+        "{{ZIP_NAME}}": zip_name,
+    }
+
+    def render(tpl: str) -> str:
+        for k, v in repl.items():
+            tpl = tpl.replace(k, v)
+        return tpl
+
+    (pkg / "⭐先看这里-换电脑恢复指引.md").write_text(render(README_TPL), encoding="utf-8")
+    sh = pkg / "restore-new-pc.sh"
+    sh.write_text(render(RESTORE_TPL), encoding="utf-8", newline="\n")
+    try:
+        os.chmod(sh, 0o755)
+    except Exception:
+        pass
+    (pkg / "双击我-一键恢复.bat").write_bytes(render(LAUNCHER_TPL).encode("gbk", errors="replace"))
+
+    # ---- 自校验 ----
+    log("== 自校验 ==")
+    must = ["01-身份与记忆/SOUL.md", "02-技能库/skills", "04-自动化任务/workbuddy.db",
+            "⭐先看这里-换电脑恢复指引.md", "restore-new-pc.sh", "双击我-一键恢复.bat"]
+    ok = True
+    for m in must:
+        exist = (pkg / m).exists()
+        log(("  ✅ " if exist else "  ❌ 缺失 ") + m)
+        ok = ok and exist
+    pkg_skills = len([d for d in (pkg / "02-技能库" / "skills").iterdir() if d.is_dir()])
+    if pkg_skills != skill_count:
+        log(f"  ❌ 技能数量不一致: 源 {skill_count} vs 包内 {pkg_skills}")
+        ok = False
+    else:
+        log(f"  ✅ 技能数量一致: {pkg_skills}")
+    zpath = pkg / "06-项目工作区-可选" / zip_name
+    if zpath.is_file():
+        with zipfile.ZipFile(zpath) as z:
+            bad = z.testzip()
+            log(f"  {'✅' if bad is None else '❌'} 工作区 zip: {len(z.namelist())} 条目, 损坏={bad}")
+            ok = ok and bad is None
+
+    total = sum(f.stat().st_size for f in pkg.rglob("*") if f.is_file())
+    log(f"== 构建完成 {'✅' if ok else '❌'} ==  包体积: {total/1048576:.1f} MB")
+
+    # ---- 原子替换为正式目录 ----
+    final = out_root / pkg_name
+    if final.exists():
+        old_dir = out_root / f"{pkg_name}.old-{stamp}"
+        renamed = False
+        try:
+            final.rename(old_dir)
+            renamed = True
+        except Exception:
+            # 常见真因：包内 .git 只读文件或目录被程序占用 → 清只读后重试
+            n = clear_readonly(final)
+            log(f"   已清除旧包只读属性 {n} 项，重试替换…")
+            try:
+                final.rename(old_dir)
+                renamed = True
+            except Exception:
+                pass
+        if renamed:
+            log(f"   旧包已重命名为: {old_dir.name}（确认新包无误后可手动删除）")
+        else:
+            # 旧目录被程序占用，退而求其次：覆盖式合并（不删旧目录）
+            try:
+                clear_readonly(final)
+                shutil.copytree(build, final, dirs_exist_ok=True)
+                log(f"   旧包目录被占用，已用覆盖式合并更新 {final.name} ✅")
+            except Exception as e:
+                log(f"   [错误] 替换失败: {e}")
+                log(f"   新包完整保留在: {build}")
+                return 3
+    try:
+        build.rename(final)
+        log(f"   路径: {final}")
+    except Exception:
+        # 走覆盖合并路径时 build 已无 rename 必要；或目录仍被占用
+        if not (final / "restore-new-pc.sh").exists():
+            log(f"   [错误] 新包落地失败，完整新包保留在: {build}")
+            return 4
+        log(f"   路径: {final}")
+
+    # ---- 清理历史临时构建目录 ----
+    for b in out_root.glob(f"{PKG_PREFIX}*.building-*"):
+        if b.is_dir():
+            try:
+                shutil.rmtree(b)
+                log(f"   已清理临时构建目录: {b.name}")
+            except Exception:
+                log(f"   [提示] 临时目录未能自动删除（可能含只读文件），可手动删除: {b.name}")
+    return 0 if ok else 2
+
+
+if __name__ == "__main__":
+    sys.exit(main())

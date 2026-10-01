@@ -1,0 +1,13 @@
+{
+  "name": "小红书相似账号推荐",
+  "installedAt": 1785989599947,
+  "source": "marketplace",
+  "version": "1.0.2",
+  "skillId": "skill_2082739653343801344",
+  "description_zh": "小红书对标账号匹配工具，输入账号或赛道条件，推荐同阶对标和高阶标杆账号。",
+  "description_en": "Find similar Xiaohongshu accounts for benchmarking, recommending same-level peers and higher-level references.",
+  "iconSource": "https://openplatform-cdn.codebuddy.cn/public/9f40ec1e-e8c9-4dca-ace6-b634b3c73991/avatar/skill/au_85e51d7c-be4.svg",
+  "iconLocalPath": "C:\\Users\\AHS\\.workbuddy\\skills\\xiaohongshu-similar-account\\_icon.svg",
+  "iconDownloadedFrom": "https://openplatform-cdn.codebuddy.cn/public/9f40ec1e-e8c9-4dca-ace6-b634b3c73991/avatar/skill/au_85e51d7c-be4.svg",
+  "installedContentHash": "sha256:d603d7a30c6045e8da386a8e1e836f13ba636832823a3ca89299423eb74fcfd0"
+}

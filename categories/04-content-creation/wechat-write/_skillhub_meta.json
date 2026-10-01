@@ -1,0 +1,13 @@
+{
+  "name": "公众号文案创作",
+  "installedAt": 1785989565505,
+  "source": "marketplace",
+  "version": "1.0.2",
+  "skillId": "skill_2082742555694645248",
+  "description_zh": "基于红狐数据公众号爆款雷达，检索爆款文章、分析流量规律，AI生成可直接发布的高质量公众号文案。",
+  "description_en": "WeChat article writing tool powered by viral content data. Searches trending articles, analyzes traffic patterns, and generates publish-ready content.",
+  "iconSource": "https://openplatform-cdn.codebuddy.cn/public/9f40ec1e-e8c9-4dca-ace6-b634b3c73991/avatar/skill/au_77369baa-8a2.svg",
+  "iconLocalPath": "C:\\Users\\AHS\\.workbuddy\\skills\\wechat-write\\_icon.svg",
+  "iconDownloadedFrom": "https://openplatform-cdn.codebuddy.cn/public/9f40ec1e-e8c9-4dca-ace6-b634b3c73991/avatar/skill/au_77369baa-8a2.svg",
+  "installedContentHash": "sha256:ae7a90ba2282d634014c3d85ffea4196fd7a50f0ba6deaabf763d4b06a8a73bb"
+}

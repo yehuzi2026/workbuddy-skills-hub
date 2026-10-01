@@ -1,0 +1,13 @@
+{
+  "name": "MarkItDown",
+  "installedAt": 1778306179938,
+  "source": "marketplace",
+  "iconSource": "https://openplatform-cdn.codebuddy.cn/public/common/capability_cover/3c523ba3-af65-432d-9631-bf6ea9479fd2/6eeb4ecc-691d-424a-9ece-1ef3a4a6e4f3.png",
+  "version": "1.0.1",
+  "skillId": "skill_2053083553754644480",
+  "description_zh": "文档转 Markdown(PDF/Word/PPT/图片OCR/音频转写/网页)",
+  "description_en": "Convert documents to Markdown (PDF, Word, PPT, images, audio, URLs)",
+  "iconLocalPath": "C:\\Users\\AHS\\.workbuddy\\skills\\markitdown-skill\\_icon.png",
+  "iconDownloadedFrom": "https://openplatform-cdn.codebuddy.cn/public/common/capability_cover/3c523ba3-af65-432d-9631-bf6ea9479fd2/6eeb4ecc-691d-424a-9ece-1ef3a4a6e4f3.png",
+  "installedContentHash": "sha256:221610f8a160f07f17a1adc9639d9c916a240d28036200cb5b8afd8095ae8287"
+}

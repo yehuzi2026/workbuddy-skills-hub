@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>保险理赔核保自动化 Agent</title>
+<style>
+  :root {
+    --bg: #f5f7fa; --card: #ffffff; --primary: #1f6feb; --text: #1f2329;
+    --muted: #6b7280; --border: #e5e7eb; --ok: #0a9d5a; --warn: #d97706; --bad: #dc2626;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: -apple-system, "Segoe UI", "Microsoft YaHei", sans-serif;
+         background: var(--bg); color: var(--text); }
+  .wrap { max-width: 920px; margin: 0 auto; padding: 24px 16px 60px; }
+  h1 { font-size: 22px; margin: 0 0 4px; }
+  .sub { color: var(--muted); font-size: 13px; margin-bottom: 20px; }
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  @media (max-width: 680px) { .grid { grid-template-columns: 1fr; } }
+  label { display: block; font-size: 13px; font-weight: 600; margin: 0 0 4px; }
+  textarea, input, select {
+    width: 100%; padding: 9px 10px; border: 1px solid var(--border); border-radius: 8px;
+    font-size: 14px; font-family: inherit; background: #fff; color: var(--text);
+  }
+  textarea { min-height: 64px; resize: vertical; }
+  .full { grid-column: 1 / -1; }
+  .bar { display: flex; gap: 12px; align-items: center; margin: 18px 0; flex-wrap: wrap; }
+  button {
+    background: var(--primary); color: #fff; border: 0; padding: 11px 22px; border-radius: 8px;
+    font-size: 15px; font-weight: 600; cursor: pointer;
+  }
+  button:disabled { opacity: .55; cursor: not-allowed; }
+  .status { font-size: 13px; color: var(--muted); }
+  .cards { display: grid; gap: 14px; }
+  .card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 16px; }
+  .card h3 { margin: 0 0 10px; font-size: 15px; display: flex; align-items: center; gap: 8px; }
+  .kv { font-size: 14px; line-height: 1.6; white-space: pre-wrap; word-break: break-word; }
+  .kv b { color: var(--text); }
+  ul { margin: 6px 0 0; padding-left: 18px; font-size: 14px; line-height: 1.6; }
+  .tag { display: inline-block; padding: 2px 10px; border-radius: 999px; font-size: 12px; font-weight: 600; }
+  .tag.ok { background: #e7f7ee; color: var(--ok); }
+  .tag.warn { background: #fdf1e1; color: var(--warn); }
+  .tag.bad { background: #fdeaea; color: var(--bad); }
+  .err { background: #fdeaea; color: var(--bad); padding: 12px; border-radius: 8px; font-size: 14px; }
+  .score { font-size: 26px; font-weight: 700; }
+  .hidden { display: none; }
+  .inline { display: flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 500; }
+  .muted { color: var(--muted); font-size: 13px; }
+  .pending-item { border: 1px dashed var(--border); border-radius: 8px; padding: 10px; margin-top: 8px; }
+  .pending-item .row { display: flex; gap: 8px; margin-top: 6px; }
+  .pending-item button { padding: 6px 14px; font-size: 13px; }
+  .btn-ok { background: var(--ok); }
+  .btn-bad { background: var(--bad); }
+  .evobadge { font-size: 12px; color: var(--muted); margin-left: 6px; }
+  /* 新手引导 */
+  .guide { background: linear-gradient(135deg,#eef4ff,#f7faff); border: 1px solid #cfe0ff; border-radius: 12px; padding: 14px 18px; margin-bottom: 18px; }
+  .guide h2 { font-size: 15px; margin: 0; display: flex; align-items: center; gap: 8px; cursor: pointer; user-select: none; }
+  .guide h2 .toggle { font-size: 12px; font-weight: 400; color: var(--muted); }
+  .guide ol { margin: 12px 0 0; padding-left: 22px; }
+  .guide li { font-size: 14px; line-height: 1.75; margin-bottom: 8px; }
+  .guide .num { display: inline-flex; width: 22px; height: 22px; background: var(--primary); color: #fff; border-radius: 50%; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; margin-right: 6px; vertical-align: middle; }
+  .guide b { color: var(--text); }
+  .guide .tip { margin-top: 10px; font-size: 13px; color: var(--muted); background: #fff; border: 1px solid var(--border); border-radius: 8px; padding: 9px 11px; line-height: 1.7; }
+  .guide .tip b { color: var(--warn); }
+  .guide .samplerow { margin-top: 10px; }
+  .guide .samplerow button { padding: 8px 16px; font-size: 13px; background: var(--warn); }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>保险理赔 / 核保自动化 Agent <span class="evobadge">v0.3.0 · 含自我净化</span></h1>
+  <div class="sub">车险物损智能初审 · 定损建议 · 材料完整性 · 拒赔风险 · 欺诈评分 · 核保建议 · 定损照片 OCR · 历史案例匹配（后端调用 SCNet 云端 API）</div>
+
+  <!-- 新手引导：面向小白，默认展开 -->
+  <div class="guide" id="guide">
+    <h2 onclick="document.getElementById('guideBody').classList.toggle('hidden')">
+      📘 第一次用？3 步就能上手 <span class="toggle">（点标题可收起 / 展开）</span>
+    </h2>
+    <div id="guideBody">
+      <ol>
+        <li><span class="num">1</span><b>填资料：</b>把事故情况、车辆、损失、保单、责任认定填进下面的框。<b>不懂的空着也行</b>，先试一次。有定损单或现场照片可上传，系统自动识别上面的文字。</li>
+        <li><span class="num">2</span><b>点「开始分析」：</b>AI 会给出结论、定损金额建议、材料是否齐全、拒赔 / 减责风险、欺诈评分、核保建议，并匹配历史相似案例。</li>
+        <li><span class="num">3</span><b>纠错让它变聪明：</b>觉得哪条不准？在页面底部「这版分析质量如何」里打分并写下正确结论。AI 会把它提炼成规则——<b>但必须你点「批准生效」才会用</b>，绝不会偷偷改判断。</li>
+      </ol>
+      <div class="tip">💡 <b>小白提示：</b>只填「事故描述」一个点「开始分析」就能看到效果；右上角模型默认 <b>glm-4-9b-chat</b> 即可；理赔含车牌 / 身份证等隐私，建议在内网或私有化环境使用。</div>
+      <div class="samplerow"><button id="sample">🪄 不会填？点我一键填入示例</button></div>
+    </div>
+  </div>
+
+  <div class="grid">
+    <div><label>事故描述</label><textarea id="accident_desc" placeholder="如：两车追尾，后车全责"></textarea></div>
+    <div><label>车辆信息</label><textarea id="vehicle_info" placeholder="如：大众朗逸 2020款 1.5L"></textarea></div>
+    <div><label>物损描述 / 现场照片说明</label><textarea id="damage_desc" placeholder="如：前杠破损、左大灯碎裂、引擎盖凹陷"></textarea></div>
+    <div><label>维修清单 / 定损单</label><textarea id="repair_list" placeholder="如：更换前杠、左大灯、钣金喷漆"></textarea></div>
+    <div><label>保单信息</label><textarea id="policy_info" placeholder="如：交强险+商业三者200万+车损险"></textarea></div>
+    <div><label>责任认定</label><textarea id="liability" placeholder="如：后车全责 / 主次责 7:3"></textarea></div>
+
+    <div class="full">
+      <label>定损照片（可选，自动 OCR 识别文字补充材料）</label>
+      <input type="file" id="image" accept="image/*" />
+      <div class="status" id="imgname"></div>
+    </div>
+  </div>
+
+  <div class="bar">
+    <select id="model">
+      <option value="glm-4-9b-chat">glm-4-9b-chat</option>
+      <option value="deepseek-r1-distill-qwen-1.5b">deepseek-r1-distill-qwen-1.5b</option>
+      <option value="DeepSeek-V4-Flash">DeepSeek-V4-Flash</option>
+    </select>
+    <label class="inline"><input type="checkbox" id="use_cases" checked /> 历史案例匹配</label>
+    <button id="run">开始分析</button>
+    <span class="status" id="status"></span>
+  </div>
+
+  <div id="error" class="err hidden"></div>
+  <div id="result" class="cards hidden"></div>
+
+  <!-- 人工反馈：反思净化的锚点 -->
+  <div id="feedback" class="card hidden">
+    <h3>这版分析质量如何？（人工反馈 → 驱动自我净化）</h3>
+    <div class="inline">
+      评分：
+      <select id="rating">
+        <option value="5">5 很好</option>
+        <option value="4">4 较好</option>
+        <option value="3">3 一般</option>
+        <option value="2">2 较差</option>
+        <option value="1">1 很差</option>
+      </select>
+    </div>
+    <label style="margin-top:10px">若分析有误，请填写正确结论 / 纠正意见（这是反思净化的锚点，必填才参与蒸馏）</label>
+    <textarea id="correction" placeholder="例如：本案应为后车全责，不应判同等责；雨天未保持安全距离是主因"></textarea>
+    <div class="bar" style="margin:10px 0 0">
+      <button id="sendfb">提交反馈</button>
+      <span class="status" id="fbstatus"></span>
+    </div>
+  </div>
+
+  <!-- 自我净化 / 经验库管理面板 -->
+  <div class="card" style="margin-top:24px">
+    <h3>🧠 自我净化 / 经验库（人工在环）</h3>
+    <div class="muted">每次分析被记录为「在线交互」；你提交的纠正经蒸馏提炼为「原则 / 新案例」，须人工批准后才生效，绝不自动改写判断。</div>
+    <div class="bar" style="margin-top:10px">
+      <button id="evolve">运行一轮蒸馏（提炼原则 + 新案例）</button>
+      <span class="status" id="evstatus"></span>
+    </div>
+    <div id="principles_box">
+      <h3 style="font-size:14px">已生效经验原则</h3>
+      <div id="principles" class="muted">加载中…</div>
+    </div>
+    <div id="pending_box" style="margin-top:12px">
+      <h3 style="font-size:14px">待审资产（需人工批准）</h3>
+      <div id="pending" class="muted">加载中…</div>
+    </div>
+  </div>
+</div>
+
+<script>
+const $ = (id) => document.getElementById(id);
+let imgB64 = "";
+let curExpId = null;
+
+// 一键填入示例，方便小白直接看到效果
+function fillSample(){
+  const s = {
+    accident_desc: "两车追尾，雨天高速，后车未保持安全距离，交警认定后车全责",
+    vehicle_info: "大众朗逸 2020款 1.5L 自动挡",
+    damage_desc: "前保险杠破裂、左前大灯碎裂、引擎盖凹陷、左前翼子板变形",
+    repair_list: "更换前杠、左前大灯、钣金修复引擎盖及翼子板、全车喷漆",
+    policy_info: "交强险 + 商业三者险200万 + 车损险",
+    liability: "后车全责",
+  };
+  for (const k in s) { const el = $(k); if (el) el.value = s[k]; }
+  imgB64 = "";
+  $("imgname").textContent = "";
+  $("status").textContent = "已填入示例，点「开始分析」试试 👇";
+}
+$("sample").onclick = fillSample;
+
+$("image").onchange = (e) => {
+  const f = e.target.files[0];
+  if (!f) { imgB64 = ""; $("imgname").textContent = ""; return; }
+  $("imgname").textContent = "读取中… " + f.name;
+  const reader = new FileReader();
+  reader.onload = () => {
+    imgB64 = reader.result;
+    $("imgname").textContent = "已载入：" + f.name + " (" + (f.size/1024).toFixed(0) + " KB)";
+  };
+  reader.readAsDataURL(f);
+};
+
+function tag(level){
+  if(["无","低"].includes(level)) return '<span class="tag ok">'+level+'</span>';
+  if(level==="中") return '<span class="tag warn">'+level+'</span>';
+  return '<span class="tag bad">'+level+'</span>';
+}
+function card(title, html){
+  return '<div class="card"><h3>'+title+'</h3><div class="kv">'+html+'</div></div>';
+}
+function list(arr){ return '<ul>'+(arr||[]).map(x=>'<li>'+x+'</li>').join('')+'</ul>'; }
+
+$("run").onclick = async () => {
+  $("error").classList.add("hidden");
+  $("result").classList.add("hidden");
+  $("feedback").classList.add("hidden");
+  $("status").textContent = "分析中…";
+  $("run").disabled = true;
+  const payload = {
+    accident_desc: $("accident_desc").value,
+    vehicle_info: $("vehicle_info").value,
+    damage_desc: $("damage_desc").value,
+    repair_list: $("repair_list").value,
+    policy_info: $("policy_info").value,
+    liability: $("liability").value,
+    model: $("model").value,
+    image_base64: imgB64,
+    use_cases: $("use_cases").checked,
+  };
+  try {
+    const r = await fetch("/api/analyze", {
+      method: "POST", headers: {"Content-Type":"application/json"}, body: JSON.stringify(payload)
+    });
+    const data = await r.json();
+    if (!r.ok) { throw new Error(data.detail || "分析失败"); }
+    curExpId = data.experience_id;
+    render(data);
+    $("feedback").classList.remove("hidden");
+    $("status").textContent = "完成（已记录为经验，可反馈）";
+  } catch (e) {
+    $("error").textContent = "错误：" + e.message;
+    $("error").classList.remove("hidden");
+    $("status").textContent = "";
+  } finally {
+    $("run").disabled = false;
+  }
+};
+
+function render(d){
+  const a = d.analysis || {};
+  let h = "";
+  if (a.summary) h += card("结论", "<b>"+a.summary+"</b>");
+
+  if (d.ocr_text) {
+    const engMap = {"rapidocr":"本地 RapidOCR（离线）","zhipu":"云端视觉","none":"未识别"};
+    const eng = engMap[d.ocr_engine] || d.ocr_engine || "-";
+    h += card("定损照片 OCR 识别",
+      "<div><b>识别引擎：</b>"+eng+"</div>"+
+      "<div style='margin-top:6px'>"+d.ocr_text+"</div>");
+  }
+
+  if (a.estimated_loss){
+    const el = a.estimated_loss;
+    h += card("定损金额建议",
+      "<div><b>区间：</b>"+ (el.amount_range||"-") +"</div>"+
+      "<div><b>依据：</b>"+ (el.basis||"-") +"</div>"+
+      (el.major_items? "<div><b>主要项目：</b>"+list(el.major_items)+"</div>":""));
+  }
+  if (a.material_check){
+    const m = a.material_check;
+    h += card("材料完整性",
+      "<div><b>是否齐全：</b>"+(m.complete? "是 ✅":"否 ❌")+"</div>"+
+      (m.missing? "<div><b>缺失：</b>"+list(m.missing)+"</div>":"")+
+      (m.present? "<div><b>已提交：</b>"+list(m.present)+"</div>":""));
+  }
+  if (a.reject_risk){
+    const rr = a.reject_risk;
+    h += card("拒赔 / 减责风险",
+      "<div><b>等级：</b>"+tag(rr.level)+"</div>"+
+      (rr.reasons? "<div><b>风险点：</b>"+list(rr.reasons)+"</div>":"")+
+      (rr.suggestions? "<div><b>建议：</b>"+list(rr.suggestions)+"</div>":""));
+  }
+  if (a.liability_ratio) h += card("责任比例建议", "<b>"+a.liability_ratio+"</b>");
+  if (a.fraud_score !== undefined && a.fraud_score !== null){
+    const s = parseInt(a.fraud_score);
+    const cls = s>=60?"bad":(s>=30?"warn":"ok");
+    h += card("欺诈风险评分",
+      '<div class="score" style="color:var(--'+cls+')">'+a.fraud_score+' / 100</div>'+
+      (a.fraud_signals? list(a.fraud_signals):""));
+  }
+  if (a.underwriting){
+    const u = a.underwriting;
+    h += card("核保建议",
+      "<div><b>风险等级：</b>"+(u.risk_level||"-")+"</div>"+
+      "<div><b>费率建议：</b>"+(u.rate_advice||"-")+"</div>"+
+      (u.notes? "<div><b>提示：</b>"+list(u.notes)+"</div>":""));
+  }
+  if (d.matched_cases && d.matched_cases.length){
+    let ch = "<div class='kv'>参考历史相似案例，收窄定损与核赔判断：</div><ul>";
+    d.matched_cases.forEach(m => {
+      ch += "<li><b>"+m.case_id+" · "+m.title+"</b><br/>"+
+            "<span class='kv'>相似点："+m.reason+"</span><br/>"+
+            "<span class='kv'>历史定损："+m.estimated_loss+"；结论："+m.conclusion+"</span></li>";
+    });
+    ch += "</ul>";
+    h += card("历史相似案例参考", ch);
+  }
+  $("result").innerHTML = h;
+  $("result").classList.remove("hidden");
+}
+
+// ---- 人工反馈 ----
+$("sendfb").onclick = async () => {
+  if (curExpId == null) { $("fbstatus").textContent = "请先完成一次分析"; return; }
+  const payload = {
+    experience_id: curExpId,
+    rating: parseInt($("rating").value),
+    correction: $("correction").value,
+  };
+  $("fbstatus").textContent = "提交中…";
+  try {
+    const r = await fetch("/api/feedback", {
+      method: "POST", headers: {"Content-Type":"application/json"}, body: JSON.stringify(payload)
+    });
+    const data = await r.json();
+    if (!r.ok) throw new Error(data.detail || "提交失败");
+    $("fbstatus").textContent = "✅ 已记录，可作为蒸馏锚点";
+  } catch (e) {
+    $("fbstatus").textContent = "错误：" + e.message;
+  }
+};
+
+// ---- 自我净化面板 ----
+async function loadPanel(){
+  try {
+    const pr = await (await fetch("/api/principles")).json();
+    const pb = await (await fetch("/api/pending")).json();
+    const pl = pr.principles || [];
+    $("principles").innerHTML = pl.length
+      ? "<ul>" + pl.map(p => "<li>"+p.text+"</li>").join("") + "</ul>"
+      : '<span class="muted">暂无已生效原则</span>';
+    const pend = pb.pending || [];
+    if (!pend.length) {
+      $("pending").innerHTML = '<span class="muted">暂无待审资产</span>';
+    } else {
+      $("pending").innerHTML = pend.map(p => {
+        const c = p.kind === "case" ? ("新案例：" + p.content) : ("新原则：" + p.content);
+        return '<div class="pending-item"><div><b>['+p.kind+']</b> '+c+'</div>'+
+               '<div class="muted">来源经验：'+p.source_ids+'</div>'+
+               '<div class="row"><button class="btn-ok" onclick="decide('+p.id+',1)">批准生效</button>'+
+               '<button class="btn-bad" onclick="decide('+p.id+',0)">拒绝</button></div></div>';
+      }).join("");
+    }
+  } catch(e) {
+    $("principles").textContent = "加载失败：" + e.message;
+  }
+}
+async function decide(id, approve){
+  const url = approve ? "/api/approve" : "/api/reject";
+  try {
+    const r = await fetch(url, {method:"POST", headers:{"Content-Type":"application/json"},
+      body: JSON.stringify({id})});
+    const data = await r.json();
+    if (!r.ok) throw new Error(data.detail || "操作失败");
+    await loadPanel();
+  } catch(e) { alert("错误：" + e.message); }
+}
+$("evolve").onclick = async () => {
+  $("evstatus").textContent = "蒸馏中（需调用 SCNet 模型）…";
+  $("evolve").disabled = true;
+  try {
+    const r = await fetch("/api/evolve", {method:"POST", headers:{"Content-Type":"application/json"},
+      body: JSON.stringify({model: $("model").value})});
+    const data = await r.json();
+    if (!r.ok) throw new Error(data.detail || "蒸馏失败");
+    const info = data.evolved
+      ? ("✅ 提炼原则 "+data.principles+" 条、新案例 "+data.cases+" 条，已入待审区，请人工审批")
+      : ("ℹ️ " + (data.reason || "无可蒸馏经验"));
+    $("evstatus").textContent = info;
+    await loadPanel();
+  } catch(e) {
+    $("evstatus").textContent = "错误：" + e.message;
+  } finally {
+    $("evolve").disabled = false;
+  }
+};
+loadPanel();
+</script>
+</body>
+</html>

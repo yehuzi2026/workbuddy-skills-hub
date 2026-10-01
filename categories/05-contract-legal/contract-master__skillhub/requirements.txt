@@ -1,0 +1,5 @@
+# contract-review skill 运行时第三方依赖
+# 标准库（os/sys/re/json/...）已覆盖，以下为必须外部安装的包。
+# 安装：pip install -r requirements.txt
+python-docx>=1.2.0
+lxml>=5.0.0

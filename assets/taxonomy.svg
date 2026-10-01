@@ -1,0 +1,64 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 560" font-family="-apple-system,Segoe UI,Microsoft YaHei,sans-serif">
+<rect width="960" height="560" fill="#0f1420"/>
+<text x="480.0" y="26" fill="#fff" font-size="20" font-weight="700" text-anchor="middle">WorkBuddy 技能库 · 10 大分类 / 75 技能</text>
+<rect x="20" y="40" width="170" height="230" rx="14" fill="#C0392B" opacity="0.92"/>
+<text x="105.0" y="98" fill="#fff" font-size="46" text-anchor="middle">📑</text>
+<text x="105.0" y="148" fill="#fff" font-size="15" font-weight="700" text-anchor="middle">投标标书与资质材料</text>
+<text x="105.0" y="170" fill="#fff" font-size="11" text-anchor="middle" opacity="0.85">Bidding &amp; Tender</text>
+<text x="105.0" y="218" fill="#fff" font-size="30" font-weight="800" text-anchor="middle">16</text>
+<text x="105.0" y="238" fill="#fff" font-size="11" text-anchor="middle" opacity="0.85">个技能</text>
+<rect x="208" y="40" width="170" height="230" rx="14" fill="#16A085" opacity="0.92"/>
+<text x="293.0" y="98" fill="#fff" font-size="46" text-anchor="middle">📄</text>
+<text x="293.0" y="148" fill="#fff" font-size="15" font-weight="700" text-anchor="middle">文档解析与排版</text>
+<text x="293.0" y="170" fill="#fff" font-size="11" text-anchor="middle" opacity="0.85">Document Processin</text>
+<text x="293.0" y="218" fill="#fff" font-size="30" font-weight="800" text-anchor="middle">6</text>
+<text x="293.0" y="238" fill="#fff" font-size="11" text-anchor="middle" opacity="0.85">个技能</text>
+<rect x="396" y="40" width="170" height="230" rx="14" fill="#2980B9" opacity="0.92"/>
+<text x="481.0" y="98" fill="#fff" font-size="46" text-anchor="middle">🕸️</text>
+<text x="481.0" y="148" fill="#fff" font-size="15" font-weight="700" text-anchor="middle">浏览器自动化与数据</text>
+<text x="481.0" y="170" fill="#fff" font-size="11" text-anchor="middle" opacity="0.85">Browser Automation</text>
+<text x="481.0" y="218" fill="#fff" font-size="30" font-weight="800" text-anchor="middle">5</text>
+<text x="481.0" y="238" fill="#fff" font-size="11" text-anchor="middle" opacity="0.85">个技能</text>
+<rect x="584" y="40" width="170" height="230" rx="14" fill="#8E44AD" opacity="0.92"/>
+<text x="669.0" y="98" fill="#fff" font-size="46" text-anchor="middle">✍️</text>
+<text x="669.0" y="148" fill="#fff" font-size="15" font-weight="700" text-anchor="middle">自媒体内容创作</text>
+<text x="669.0" y="170" fill="#fff" font-size="11" text-anchor="middle" opacity="0.85">Content Creation</text>
+<text x="669.0" y="218" fill="#fff" font-size="30" font-weight="800" text-anchor="middle">11</text>
+<text x="669.0" y="238" fill="#fff" font-size="11" text-anchor="middle" opacity="0.85">个技能</text>
+<rect x="772" y="40" width="170" height="230" rx="14" fill="#2C3E50" opacity="0.92"/>
+<text x="857.0" y="98" fill="#fff" font-size="46" text-anchor="middle">⚖️</text>
+<text x="857.0" y="148" fill="#fff" font-size="15" font-weight="700" text-anchor="middle">合同审核与法务风控</text>
+<text x="857.0" y="170" fill="#fff" font-size="11" text-anchor="middle" opacity="0.85">Contract &amp; Legal</text>
+<text x="857.0" y="218" fill="#fff" font-size="30" font-weight="800" text-anchor="middle">4</text>
+<text x="857.0" y="238" fill="#fff" font-size="11" text-anchor="middle" opacity="0.85">个技能</text>
+<rect x="20" y="288" width="170" height="230" rx="14" fill="#D35400" opacity="0.92"/>
+<text x="105.0" y="346" fill="#fff" font-size="46" text-anchor="middle">🏗️</text>
+<text x="105.0" y="396" fill="#fff" font-size="15" font-weight="700" text-anchor="middle">工程 / 造价 /</text>
+<text x="105.0" y="418" fill="#fff" font-size="11" text-anchor="middle" opacity="0.85">Engineering &amp; Cost</text>
+<text x="105.0" y="466" fill="#fff" font-size="30" font-weight="800" text-anchor="middle">4</text>
+<text x="105.0" y="486" fill="#fff" font-size="11" text-anchor="middle" opacity="0.85">个技能</text>
+<rect x="208" y="288" width="170" height="230" rx="14" fill="#27AE60" opacity="0.92"/>
+<text x="293.0" y="346" fill="#fff" font-size="46" text-anchor="middle">🤖</text>
+<text x="293.0" y="396" fill="#fff" font-size="15" font-weight="700" text-anchor="middle">AI Agent </text>
+<text x="293.0" y="418" fill="#fff" font-size="11" text-anchor="middle" opacity="0.85">Agent Framework &amp; </text>
+<text x="293.0" y="466" fill="#fff" font-size="30" font-weight="800" text-anchor="middle">11</text>
+<text x="293.0" y="486" fill="#fff" font-size="11" text-anchor="middle" opacity="0.85">个技能</text>
+<rect x="396" y="288" width="170" height="230" rx="14" fill="#34495E" opacity="0.92"/>
+<text x="481.0" y="346" fill="#fff" font-size="46" text-anchor="middle">🧠</text>
+<text x="481.0" y="396" fill="#fff" font-size="15" font-weight="700" text-anchor="middle">本地大模型部署与调</text>
+<text x="481.0" y="418" fill="#fff" font-size="11" text-anchor="middle" opacity="0.85">Local LLM Deployme</text>
+<text x="481.0" y="466" fill="#fff" font-size="30" font-weight="800" text-anchor="middle">4</text>
+<text x="481.0" y="486" fill="#fff" font-size="11" text-anchor="middle" opacity="0.85">个技能</text>
+<rect x="584" y="288" width="170" height="230" rx="14" fill="#7F8C8D" opacity="0.92"/>
+<text x="669.0" y="346" fill="#fff" font-size="46" text-anchor="middle">🛠️</text>
+<text x="669.0" y="396" fill="#fff" font-size="15" font-weight="700" text-anchor="middle">Windows 运</text>
+<text x="669.0" y="418" fill="#fff" font-size="11" text-anchor="middle" opacity="0.85">Windows Ops &amp; Tool</text>
+<text x="669.0" y="466" fill="#fff" font-size="30" font-weight="800" text-anchor="middle">9</text>
+<text x="669.0" y="486" fill="#fff" font-size="11" text-anchor="middle" opacity="0.85">个技能</text>
+<rect x="772" y="288" width="170" height="230" rx="14" fill="#C0392B" opacity="0.92"/>
+<text x="857.0" y="346" fill="#fff" font-size="46" text-anchor="middle">🚗</text>
+<text x="857.0" y="396" fill="#fff" font-size="15" font-weight="700" text-anchor="middle">垂直业务系统（车拍</text>
+<text x="857.0" y="418" fill="#fff" font-size="11" text-anchor="middle" opacity="0.85">Vertical Business </text>
+<text x="857.0" y="466" fill="#fff" font-size="30" font-weight="800" text-anchor="middle">5</text>
+<text x="857.0" y="486" fill="#fff" font-size="11" text-anchor="middle" opacity="0.85">个技能</text>
+</svg>

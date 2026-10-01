@@ -1,0 +1,10 @@
+{
+  "name": "仓颉Skill",
+  "installedAt": 1786422881004,
+  "source": "marketplace",
+  "version": "2.5.0",
+  "skillId": "skill_2079858719333715968",
+  "description_zh": "将书籍、长视频、播客或课程蒸馏为一组可执行技能。适用于拆书、蒸馏、把XX做成skill等场景，通过RIA阅读法提取框架、原则、思维模型和方法论，生成原子化可复用的Agent技能。",
+  "description_en": "Distill books, long-video transcripts, podcasts, or courses into executable agent skills. Extracts frameworks, principles, mental models, and methodologies into atomic, reusable skills using RIA reading method.",
+  "installedContentHash": "sha256:f3fc625ad4cda78112649c1b1a5da1af54aff6b0ebb8aad374a7805046c2096b"
+}

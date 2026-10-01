@@ -1,0 +1,11 @@
+{
+  "name": "战略洞察生成器",
+  "installedAt": 1785989511687,
+  "source": "marketplace",
+  "version": "1.0.0",
+  "skillId": "skill_2084643411309187072",
+  "description_zh": "基于财报分析生成3-5条核心战略洞察，重点关注零售业务相关高频词和组织架构变化，按优先级排序输出增长机会、风险预警和效率提升建议。用户需指定基准银行，如\"以A银行为基准/为主角生成零售战略洞察报告\"。",
+  "description_en": "Generate 3–5 core strategic insights based on financial-report analysis, with a focus on high-frequency retail-banking keywords and organizational-structure changes. Output growth opportunities, risk alerts, and efficiency-improvement recommendations, ranked by priority. Users must specify a benchmark bank, e.g., \"Using Bank A as the benchmark/protagonist, generate a retail strategy insights report.\"",
+  "iconSource": "letter:auto",
+  "installedContentHash": "sha256:c838445a08c2cbd72e4dd843a8e9dad9f23f1675d43e95c8a0c7eabd39c513bd"
+}

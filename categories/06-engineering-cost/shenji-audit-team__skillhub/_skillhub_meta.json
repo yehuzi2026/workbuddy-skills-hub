@@ -1,0 +1,11 @@
+{
+  "slug": "shenji-audit-team",
+  "name": "工程造价审计AI助手",
+  "version": "1.2.2",
+  "installedAt": 1789383203324,
+  "source": "skillhub",
+  "iconSource": "https://cloudcache.tencent-cloud.com/qcloud/ui/static/other_external_resource/401a454b-4b16-4aee-a18c-4e3467ca48f1.png",
+  "iconLocalPath": "C:\\Users\\AHS\\.workbuddy\\skills\\shenji-audit-team__skillhub\\_icon.png",
+  "iconDownloadedFrom": "https://cloudcache.tencent-cloud.com/qcloud/ui/static/other_external_resource/401a454b-4b16-4aee-a18c-4e3467ca48f1.png",
+  "installedContentHash": "sha256:ee021f6fa42fb2c5ae59cf02461fa2791c00c35a3138f4b5af632916a8b18e15"
+}

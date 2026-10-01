@@ -1,0 +1,45 @@
+# tender-writer 的 .gitignore
+# 本 skill 不强制依赖 git,但同事可能在自己的 fork 中用 git 管理。
+# 加这份 .gitignore 避免把环境/缓存/输出/真实素材误提交进版本库。
+
+# Python 缓存
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# 本地 venv(由 install.bat 创建,体积大且与本机 Python 强相关)
+/.venv/
+
+# 工作产物(每次新投标项目都会重新生成,不应进版本库)
+/output/
+
+# 测试临时目录(test_regression.py 的临时副本通常在系统 temp,但本地有时会泄漏)
+.pytest_cache/
+*.coverage
+htmlcov/
+
+# 系统残留
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# ============================================================
+# 运行时目录与用户私有数据(公开仓库不追踪)
+# ============================================================
+
+# 待分类收件箱(运行时目录,仅保留 .gitkeep 占位)
+_inbox_unsorted/*
+!_inbox_unsorted/.gitkeep
+
+# 素材库中的公司级子目录(用户私有数据,clone 后由用户自行填充)
+assets/*/*/
+
+# 素材摄入去重记录(运行时数据)
+assets/.ingest_history.json

@@ -1,0 +1,19 @@
+{
+  "slug": "karpathy-llm-wiki",
+  "name": "karpathy-llm-wiki",
+  "version": "1.0.0",
+  "installedAt": 1789464023258,
+  "source": "skillhub",
+  "namespace": "clawhub_john-ver",
+  "canonicalName": "@clawhub_john-ver/karpathy-llm-wiki",
+  "iconSource": "https://cloudcache.tencent-cloud.com/qcloud/ui/static/other_external_resource/e9a58ede-ead5-43fd-9523-d1ba7f1b78cd.png",
+  "labels": {
+    "requires_api_key": "false"
+  },
+  "description_zh": "基于 Karpathy 的 LLM‑Wiki 模式，持久化 Wiki 管理器，构建并维护一个结构化、互相链接的 Markdown Wiki，从您的来源中持续积累知识。",
+  "description_en": "Persistent wiki manager based on Karpathy's LLM-Wiki pattern. Builds and maintains a structured, interlinked markdown wiki from your sources — compounding kn...",
+  "installs": 10825,
+  "iconLocalPath": "C:\\Users\\AHS\\.workbuddy\\skills\\karpathy-llm-wiki__skillhub\\_icon.png",
+  "iconDownloadedFrom": "https://cloudcache.tencent-cloud.com/qcloud/ui/static/other_external_resource/e9a58ede-ead5-43fd-9523-d1ba7f1b78cd.png",
+  "installedContentHash": "sha256:8cf34a81abe4cbddadc28131ab5bc5c78231836b5e416581a84b7f952df723e8"
+}

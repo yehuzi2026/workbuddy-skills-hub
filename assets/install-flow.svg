@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 160" font-family="-apple-system,Segoe UI,Microsoft YaHei,sans-serif">
+<rect width="960" height="160" fill="#0f1420"/>
+<rect x="20.0" y="45" width="140" height="70" rx="12" fill="#1f6feb"/>
+<text x="90.0" y="87" fill="#fff" font-size="13" font-weight="600" text-anchor="middle">① 克隆/下载仓库</text>
+<text x="172.0" y="86.0" fill="#fff" font-size="22" text-anchor="middle">→</text>
+<rect x="176.0" y="45" width="140" height="70" rx="12" fill="#238636"/>
+<text x="246.0" y="87" fill="#fff" font-size="13" font-weight="600" text-anchor="middle">② 按分类挑选技能</text>
+<text x="328.0" y="86.0" fill="#fff" font-size="22" text-anchor="middle">→</text>
+<rect x="332.0" y="45" width="140" height="70" rx="12" fill="#1f6feb"/>
+<text x="402.0" y="87" fill="#fff" font-size="13" font-weight="600" text-anchor="middle">③ 复制技能文件夹</text>
+<text x="484.0" y="86.0" fill="#fff" font-size="22" text-anchor="middle">→</text>
+<rect x="488.0" y="45" width="140" height="70" rx="12" fill="#238636"/>
+<text x="558.0" y="87" fill="#fff" font-size="13" font-weight="600" text-anchor="middle">④ 放入 ~/.workbuddy/skills/</text>
+<text x="640.0" y="86.0" fill="#fff" font-size="22" text-anchor="middle">→</text>
+<rect x="644.0" y="45" width="140" height="70" rx="12" fill="#1f6feb"/>
+<text x="714.0" y="87" fill="#fff" font-size="13" font-weight="600" text-anchor="middle">⑤ 重启 WorkBuddy</text>
+<text x="796.0" y="86.0" fill="#fff" font-size="22" text-anchor="middle">→</text>
+<rect x="800.0" y="45" width="140" height="70" rx="12" fill="#238636"/>
+<text x="870.0" y="87" fill="#fff" font-size="13" font-weight="600" text-anchor="middle">⑥ 对话直接触发</text>
+</svg>

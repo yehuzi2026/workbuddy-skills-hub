@@ -1,0 +1,13 @@
+{
+  "name": "公众号10w+文章",
+  "installedAt": 1785989576958,
+  "source": "marketplace",
+  "version": "1.0.1",
+  "skillId": "skill_2082742069717520384",
+  "description_zh": "全网持续收录每日1000+条公众号10w+文章，支持23个领域分类查询、智能爆款规律分析和HTML报告导出。",
+  "description_en": "Daily collection of 1000+ WeChat articles with 100K+ reads. Supports 23 category filters, viral pattern analysis, and HTML report export.",
+  "iconSource": "https://openplatform-cdn.codebuddy.cn/public/9f40ec1e-e8c9-4dca-ace6-b634b3c73991/avatar/skill/au_1348a3d2-c83.svg",
+  "iconLocalPath": "C:\\Users\\AHS\\.workbuddy\\skills\\wechat-10w-hot\\_icon.svg",
+  "iconDownloadedFrom": "https://openplatform-cdn.codebuddy.cn/public/9f40ec1e-e8c9-4dca-ace6-b634b3c73991/avatar/skill/au_1348a3d2-c83.svg",
+  "installedContentHash": "sha256:56b0e0d6c923f38cbf4fb5409fc76591421b0a5138fff7e022bd115d2deae63d"
+}

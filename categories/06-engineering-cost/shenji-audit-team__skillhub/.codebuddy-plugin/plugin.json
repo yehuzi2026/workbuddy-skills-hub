@@ -1,0 +1,219 @@
+{
+  "name": "cost-audit-team",
+  "version": "1.9.0",
+  "description": "工程造价审计AI助手——结算审核、造价审计、工程索赔、清单计价、指标分析 5 角色 + 主理人，覆盖结算审核→造价审计→索赔→指标对标→**审计作业过程（对量 / 底稿 / 检查范围 / 台账 / 成套项目档案 / 取证与复核留痕）**的全流程。真实计算引擎(24 个函数/99 项自检，含组价、风险幅度三档与多期加权调差、量差 ±15% 调价、审减归因、勾稽校验、检查范围方案、预付款扣回、质保金、逾期利息、索赔时限、指标对标) + **对量差异分析工具 reconcile.py（量差/价差/漏项/增项四项闭合校验）** + **问题定性与依据配对 issue_pair.py（问题定性 → 规范数据库条款，带证据要求与常见处理）** + **审计项目成套模板 project_template.py（六卷档案 30 份 + 00 项目索引，一条命令生成整套可归档审计档案，含取证/抽样见证/电子取数（含校验值登记）/三级复核/征求意见/期后事项/证据附件页码索引/审计日记与工作记录/外聘与回避/整改回访共十份过程留痕件，缺数据留「（待填）」不代填；报告附件目录按附件页码自动编号；另支持 --portfolio 多项目总台账）** + 片段级输出门禁(拦无出处数字/金额只标条文/模糊措辞+数字/编码损坏，留痕 gate_log.jsonl) + 离线权威条款检索(31 条，带效力与适用条件，支持分词打分检索) + **9 类结构化交付(结算审核/造价审计/索赔分析/指标分析/审计底稿/审计实施方案/资料索取清单/问题整改台账/争议事项台账)** + 文件解析与当地价格数据接入(local_rates，缺价 fail-closed；--hash 登记导出件 SHA-256/MD5 并支持使用前复算比对) + 法规时效巡检 + 内容自检(题库答案可复现) + 计算铁律(带数值结论须附 calc_engine.py 实算证据) + 全工具自检(引擎/冒烟/内容一致性/法规时效)。计价依据以合同约定为准；内置库只含规则与条文，不含任何价格数字；所有造价数据均为参考值，须对照当地公布数据核验。",
+  "author": {
+    "name": "贵州虹楠网络科技公司",
+    "email": "<邮箱已脱敏>"
+  },
+  "agents": [
+    "./agents/cost-audit-team-team-lead.md",
+    "./agents/audit-settlement.md",
+    "./agents/audit-auditor.md",
+    "./agents/audit-claim.md",
+    "./agents/audit-pricer.md",
+    "./agents/audit-index.md"
+  ],
+  "expertType": "team",
+  "agentName": "cost-audit-team-team-lead",
+  "teamInfo": {
+    "leadAgent": "cost-audit-team-team-lead",
+    "memberAgents": [
+      "audit-settlement",
+      "audit-auditor",
+      "audit-claim",
+      "audit-pricer",
+      "audit-index"
+    ]
+  },
+  "displayName": {
+    "zh": "工程造价审计AI助手",
+    "en": "Cost Engineering Audit AI Assistant"
+  },
+  "profession": {
+    "zh": "工程造价审计AI助手",
+    "en": "Cost Engineering Audit AI Assistant"
+  },
+  "displayDescription": {
+    "zh": "工程造价审计AI助手：结算清、审计明、索赔通、清单准、指标衡五大角色协同，覆盖造价审计全流程。",
+    "en": "Cost Engineering Audit AI Assistant: five roles collaborate."
+  },
+  "categoryId": "09-OperationsHR",
+  "defaultInitPrompt": {
+    "zh": "帮我梳理核心工作流",
+    "en": "Help me outline the core workflow"
+  },
+  "plugin": "cost-audit-team",
+  "tags": [
+    {
+      "en": "Engineering AI",
+      "zh": "工程AI"
+    },
+    {
+      "en": "cost-audit-ai",
+      "zh": "工程造价审计AI助手"
+    },
+    {
+      "en": "Expert Team",
+      "zh": "专家团"
+    }
+  ],
+  "quickPrompts": [
+    {
+      "zh": "帮我梳理核心工作流",
+      "en": "Outline core workflow"
+    },
+    {
+      "zh": "审这份竣工结算，给审减明细",
+      "en": "Audit this settlement"
+    },
+    {
+      "zh": "两版数据对量，找出量差价差与漏项",
+      "en": "Reconcile two BOQ versions"
+    },
+    {
+      "zh": "出审计底稿与检查范围方案",
+      "en": "Draft workpapers and audit plan"
+    },
+    {
+      "zh": "建一个新的审计项目整套档案",
+      "en": "Build a full audit archive set"
+    },
+    {
+      "zh": "问题定性拿不准，帮我找依据",
+      "en": "Map an issue to clauses"
+    },
+    {
+      "zh": "把手上几个项目出一份总台账",
+      "en": "Build a multi-project ledger"
+    },
+    {
+      "zh": "这批导出的电子数据要登记校验值，以后用之前对一遍",
+      "en": "Register and verify data fingerprints"
+    },
+    {
+      "zh": "记审计日记、做整改回访核实能不能销号",
+      "en": "Diary and rectification follow-up"
+    }
+  ],
+  "members": [
+    {
+      "id": "cost-audit-team-team-lead",
+      "displayName": {
+        "en": "Shen",
+        "zh": "审清"
+      },
+      "profession": {
+        "en": "Audit Commander",
+        "zh": "造价审计总指挥"
+      },
+      "role": "lead"
+    },
+    {
+      "id": "audit-settlement",
+      "displayName": {
+        "en": "Qing",
+        "zh": "结算清"
+      },
+      "profession": {
+        "en": "Settlement Auditor",
+        "zh": "结算审核师"
+      },
+      "role": "member"
+    },
+    {
+      "id": "audit-auditor",
+      "displayName": {
+        "en": "Ming",
+        "zh": "审计明"
+      },
+      "profession": {
+        "en": "Cost Auditor",
+        "zh": "造价审计师"
+      },
+      "role": "member"
+    },
+    {
+      "id": "audit-claim",
+      "displayName": {
+        "en": "Tong",
+        "zh": "索赔通"
+      },
+      "profession": {
+        "en": "Claim Analyst",
+        "zh": "索赔分析师"
+      },
+      "role": "member"
+    },
+    {
+      "id": "audit-pricer",
+      "displayName": {
+        "en": "Zhun",
+        "zh": "清单准"
+      },
+      "profession": {
+        "en": "BOQ Pricer",
+        "zh": "清单计价师"
+      },
+      "role": "member"
+    },
+    {
+      "id": "audit-index",
+      "displayName": {
+        "en": "Heng",
+        "zh": "指标衡"
+      },
+      "profession": {
+        "en": "Index Analyst",
+        "zh": "指标分析师"
+      },
+      "role": "member"
+    }
+  ],
+  "tools": [
+    {
+      "name": "calc_engine.py",
+      "desc": "真实造价计算（24 函数，--list / --selftest，99 项断言）：调值公式、材料风险幅度三档调差与**多期用量加权调差**、工程量偏差 ±15% 调价、清单组价（--rates_file 引用当地真实价格并标注来源，缺价 fail-closed 报错）、结算总价、审减额与明细、**审减归因（量差+价差 ≡ 审减额，可反向验算）**、**勾稽校验（分项合计 vs 报表汇总，超允差即不一致）**、**检查范围方案（大额必查 + 覆盖率控制，非统计抽样）**、预付款扣回、质保金、逾期利息、索赔时差与最终报告时限、单方/含量指标对标"
+    },
+    {
+      "name": "gate.py",
+      "desc": "统一输出门禁（唯一漏斗）：emit 放行 / check 预检 / selfcheck 交付末道拦截 / log 留痕查询；片段级判定，拦无出处数字、模糊措辞+数字、编码损坏；**金额（元/万元/亿元）只标条文而无数据来源或计算式一律拦截**（条文只能证明计价规则，不能证明本项目金额）；WARN 提示价格未声明来源与缺实算证据；留痕 gate_log.jsonl；支持 --file 文件模式（Windows 管道中文会乱码）；已修「合同约定/合约」中“约”被误判为模糊措辞的误伤"
+    },
+    {
+      "name": "authority_search.py",
+      "desc": "离线权威检索（规范数据库 31 条 + 知识库 01~10 篇 + 法规注册表）：分词打分匹配，自然语句也能命中，条目标题命中额外加权；命中退出码 0，未命中退出码 1 并强制给出库外降级声明；支持 --json / --all"
+    },
+    {
+      "name": "ingest.py",
+      "desc": "文件原生解析（清单/结算 xlsx、xlsm、csv、PDF）+ 当地信息价与费用定额导入 local_rates.json（--build-rates，含 CSV 编码自动识别与费率百分数换算）+ **--hash 登记电子数据文件指纹（SHA-256 与 MD5，含大小与修改时间）**，--hash --expect 使用前复算比对（不一致退出码 1，失败闭合），用于「电子数据取数说明」的校验值登记"
+    },
+    {
+      "name": "deliverable.py",
+      "desc": "结构化交付（9 类，表格 xlsx + 报告 md）：结算审核 / 造价审计 / 索赔分析 / 指标分析 / **审计底稿（索引+检查程序+证据+依据+金额+结论+编制复核签署，清单逐行自带证据与数据来源列）** / **审计实施方案·检查范围（调用引擎 sample_plan）** / **资料索取清单 PBC** / **问题整改台账（含销号状态）** / **争议事项台账**；结论句自带数据来源，生成后自动过门禁自检；python deliverable.py 一键产出 9 类样例"
+    },
+    {
+      "name": "issue_pair.py",
+      "desc": "问题定性与依据配对：问题描述 / 定性 → 规范数据库条款（std_ref + clause + 效力 + 适用条件 + 要点），并给出常见处理、证据要求与「条款号须核验」声明；映射文件 references/data/问题定性与依据映射.json 与规范数据库同源，自检校验漂移；支持 --定性 / --list / --json；命中退出 0，未命中退出 1 并转向 authority_search.py，绝不编造条款"
+    },
+    {
+      "name": "reconcile.py",
+      "desc": "对量差异分析：送审/审定两版明细（xlsx/xlsm/csv）按项目编码逐项比对，自动拆出量差/价差/漏项/增项并做四项闭合校验（量差+价差+漏项+增项 ≡ 总差额）；输出对量差异明细.xlsx + 对量差异分析.md；自带门禁自检；支持 --key/--qty/--price/--amount/--unit/--left_label/--right_label/--top"
+    },
+    {
+      "name": "project_template.py",
+      "desc": "审计项目成套模板：由一个项目信息 JSON 生成**六卷固定目录 + 00 项目索引**的整套可归档审计档案（01 审前调查与立项 / 02 审计实施方案 / 03 资料索取与交接 / 04 底稿与证据 / 05 问题与争议 / 06 报告与归档，共 30 份文件，含 xlsx；含现场取证记录单、抽样见证记录、电子数据取数说明（含校验值登记：导出时间 + 记录数 + SHA-256 / MD5）、三级复核意见记录表、征求意见与沟通记录、期后事项与追溯调整记录、证据附件页码索引、审计日记与工作记录、外聘人员与回避记录、整改回访记录）；**证据附件页码索引把「报告金额 → 底稿索引 → 附件页码」三步打通**（页数缺口处其后页码一律留「（待填）」，装订后手工补填；报告附件目录随之自动编号）；实施方案的必查 / 抽中 / 未覆盖由引擎 sample_plan 实算并声明「非统计抽样」；**缺数据一律留「（待填）」绝不代填**，未提供检查范围明细时如实说明尚未生成及生成规则；每份 Markdown 生成后逐个过门禁，未放行即列出并返回非 0；实施方案含重要性水平、重点风险领域与应对措施、方案调整与报批、编制/复核/批准签署栏；支持 --save-template（导出 UTF-8 空白模板）/ --demo / --meta / --out，以及 --portfolio <目录> 生成多项目总台账"
+    },
+    {
+      "name": "staleness_check.py",
+      "desc": "法规时效巡检：法规注册表 + 规范数据库核校日超期告警（--days / --json）"
+    },
+    {
+      "name": "e2e_smoke_test.py",
+      "desc": "全工具端到端冒烟自检（83 项：引擎 99 断言 + 门禁回归 9 例 + 文件解析与 fail-closed + 文件指纹生成与复算比对（含不一致 fail-closed）+ 9 类交付物逐份过门禁 + 对量工具四项闭合校验 + 成套档案（30 份）与过程留痕件过门禁 + 问题定性配对 + 多项目总台账 + 内容自检）"
+    },
+    {
+      "name": "content_check.py",
+      "desc": "内容自检：全包完整性（UTF-8/无 BOM/无乱码/JSON 合法/Python 语法/未被截断）+ **文档/代码/配置一致性**（文档引用的 --func 与脚本必须真实存在、deliverable 函数必须存在、plugin.json 角色与工具必须存在、单代理 SKILL 与 agent 定义逐字同源、知识库索引收录全部文件、项目信息模板与代码同源、问题定性与依据映射同源、工具脚本必须登记在 tools、成套模板构件必须在 build_project 真实接线、成套档案文件数说明必须与实现同步、每个工具必须被至少一份角色定义提到）+ 题库 18 道计算题逐题现场复算并与答案比对；--quick 跳过复算"
+    }
+  ]
+}

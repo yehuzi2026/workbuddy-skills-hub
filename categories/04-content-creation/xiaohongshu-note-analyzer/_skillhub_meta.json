@@ -1,0 +1,13 @@
+{
+  "name": "小红书笔记优化助手",
+  "installedAt": 1785989534522,
+  "source": "marketplace",
+  "version": "1.0.0",
+  "skillId": "skill_2084834037257261056",
+  "description_zh": "基于全网爆款数据对小红书文案多维度评分并给出优化建议",
+  "description_en": "Score and optimize Xiaohongshu copywriting based on trending data",
+  "iconSource": "https://openplatform-cdn.codebuddy.cn/public/9f40ec1e-e8c9-4dca-ace6-b634b3c73991/avatar/skill/au_3bf70c9c-491.svg",
+  "iconLocalPath": "C:\\Users\\AHS\\.workbuddy\\skills\\xiaohongshu-note-analyzer\\_icon.svg",
+  "iconDownloadedFrom": "https://openplatform-cdn.codebuddy.cn/public/9f40ec1e-e8c9-4dca-ace6-b634b3c73991/avatar/skill/au_3bf70c9c-491.svg",
+  "installedContentHash": "sha256:e751a23b5036a5e5df0c8a3c8214b26dcc060eb5c71a56adec1d180a0af0d12d"
+}

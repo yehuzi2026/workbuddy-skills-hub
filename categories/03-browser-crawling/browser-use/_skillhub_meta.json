@@ -1,0 +1,13 @@
+{
+  "name": "浏览器自动化",
+  "installedAt": 1785989542075,
+  "source": "marketplace",
+  "version": "2.0.7",
+  "skillId": "skill_2053081792154468352",
+  "description_zh": "浏览器自动化（导航、点击、截图、数据提取、多会话、云浏览器）",
+  "description_en": "Automates browser interactions for web testing, form filling, screenshots, and data extraction.",
+  "iconSource": "https://openplatform-cdn.codebuddy.cn/public/45edac6b-2078-4678-89f3-6f9800cf5e5f/avatar/skill/au_8eccd64f-169.svg",
+  "iconLocalPath": "C:\\Users\\AHS\\.workbuddy\\skills\\browser-use\\_icon.svg",
+  "iconDownloadedFrom": "https://openplatform-cdn.codebuddy.cn/public/45edac6b-2078-4678-89f3-6f9800cf5e5f/avatar/skill/au_8eccd64f-169.svg",
+  "installedContentHash": "sha256:1fa3cabff0af8d04345f0dfce2e8a02d4e4cf2a40f92cedc56a970180161bd21"
+}

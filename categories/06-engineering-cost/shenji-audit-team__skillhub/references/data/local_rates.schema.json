@@ -1,0 +1,62 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "当地造价价格/费率数据（local_rates）",
+  "description": "用户维护的【当地真实公布造价数据】。本团 calc_engine 计算时引用此文件，保证价格/费率来自当地公布数据而非 AI 编造。请务必替换为您的真实数据。",
+  "type": "object",
+  "required": ["region", "period", "source", "updated", "materials", "fee_rates"],
+  "properties": {
+    "region": {
+      "type": "string",
+      "description": "地区，如 贵州省毕节市 / 贵州省贵阳市 / 全国"
+    },
+    "period": {
+      "type": "string",
+      "description": "数据期次，如 2026年第3期 / 2026Q3 / 2026-07"
+    },
+    "source": {
+      "type": "string",
+      "description": "数据来源机构，如 毕节市建设工程造价管理机构 / 贵州省住房城乡建设厅造价总站"
+    },
+    "updated": {
+      "type": "string",
+      "description": "导入日期 YYYY-MM-DD"
+    },
+    "is_example": {
+      "type": "boolean",
+      "description": "true=示例占位数据（非真实），引擎输出会标注『参考/示例』；请提供真实数据后改为 false"
+    },
+    "materials": {
+      "type": "object",
+      "description": "材料/设备单价（含税或除税须与 unit 一致），键为材料名，值为单价（元/单位）",
+      "additionalProperties": {
+        "type": "number"
+      },
+      "examples": [{"C30商品混凝土 m³": 480, "HRB400钢筋 t": 3900}]
+    },
+    "labor_rate": {
+      "type": "number",
+      "description": "人工单价（元/工日），可选"
+    },
+    "machine_rates": {
+      "type": "object",
+      "description": "机械台班单价（元/台班），可选",
+      "additionalProperties": { "type": "number" }
+    },
+    "fee_rates": {
+      "type": "object",
+      "description": "取费费率（相对 人材机 计取的比率，0.05=5%）",
+      "properties": {
+        "manage_rate": { "type": "number", "description": "管理费率" },
+        "profit_rate": { "type": "number", "description": "利润率" },
+        "risk_amp": { "type": "number", "description": "风险幅度" },
+        "tax_rate": { "type": "number", "description": "增值税率（含税口径时给出）" },
+        "gov_fee_rate": { "type": "number", "description": "规费费率（如有）" }
+      },
+      "required": ["manage_rate", "profit_rate"]
+    },
+    "notes": {
+      "type": "string",
+      "description": "备注：计价口径（含税/除税）、适用定额版本等"
+    }
+  }
+}

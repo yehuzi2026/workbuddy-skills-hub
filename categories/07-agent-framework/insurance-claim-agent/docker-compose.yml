@@ -1,0 +1,22 @@
+# 保险理赔 Agent —— docker-compose 编排
+# 用法：
+#   1) cp .env.example .env 并填入 SCNET_API_KEY
+#   2) docker compose up -d --build
+#   3) http://<服务器IP>:8000
+services:
+  claim-agent:
+    build: .
+    container_name: insurance-claim-agent
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env            # 含 SCNET_API_KEY 等敏感变量（勿提交到 git）
+    environment:
+      # 经验库（自我净化记忆）落到持久卷，避免容器重建后丢失
+      - SELF_IMPROVE_DB=/data/experience.db
+      - PORT=8000
+    volumes:
+      - ./data:/data   # 经验库持久化目录（容器自动创建）
+    # 如需覆盖案例库或有私有案例，取消下一行注释（只读挂载）
+    # - ./cases.json:/app/cases.json:ro

@@ -1,0 +1,18 @@
+{
+  "_description": "服务类技术方案图片索引模板 — 用于 Phase 5 图片插入的图片元数据",
+  "_usage": "将图片放入以章节名命名的子文件夹后，运行 scripts/insert_images.py 自动匹配",
+  "_folder_structure_example": {
+    "服务方案设计": ["服务流程图.png", "组织架构图.png"],
+    "人员配置方案": ["岗位分布图.png", "人员资质证书.png"],
+    "应急预案": ["应急响应流程图.png"],
+    "物资装备配置": ["设备清单照片.png"]
+  },
+  "_rules": {
+    "per_chapter": "每个章节最多插入 1 张图片",
+    "matching": "文件夹名匹配 ## 标题名 或 包含在 ### 子标题中 → 自动插入",
+    "no_force": "无匹配章节的图片不硬塞，宁缺毋滥",
+    "image_size": "插入宽度 14cm，居中显示",
+    "caption_format": "图X-Y  图片说明（宋体 9pt，居中）"
+  },
+  "images": []
+}

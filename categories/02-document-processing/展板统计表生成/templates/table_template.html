@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>车辆区域分布统计表</title>
+<style>
+  /* ============================================================
+     车辆区域分布统计表 · 展板级数据表（藏青 + 米金）
+     换数据 → 只改下面 <script> 里的 DATA 对象，其余不用动
+     ============================================================ */
+  :root{
+    --navy:        #1b3a5e;
+    --navy-deep:   #14304f;
+    --gold:        #c8a24a;
+    --gold-text:   #b0872c;
+    --cream:       #fbf3e2;
+    --cream-soft:  #fdf8ec;
+    --chip-bg:     #f5f2ea;
+    --line:        #ecebe6;
+    --line-v:      #f1efea;
+    --line-strong: #e3dfd4;
+    --text:        #3d3a34;
+    --muted:       #8a8578;
+    --muted-2:     #9c978a;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html,body{background:#ffffff;}
+  body{
+    width:780px;
+    padding:38px 40px 34px;
+    font-family:"Microsoft YaHei","PingFang SC","Source Han Sans SC","Hiragino Sans GB","Helvetica Neue",Arial,sans-serif;
+    -webkit-font-smoothing:antialiased;
+    color:var(--text);
+  }
+
+  .title{
+    font-size:26px; line-height:1.25; font-weight:800;
+    letter-spacing:1.5px; color:var(--navy); text-align:center;
+    text-indent:1.5px;
+  }
+  .subtitle{
+    margin-top:9px; font-size:13px; line-height:1.4;
+    letter-spacing:1.6px; color:var(--muted); text-align:center;
+    text-indent:1.6px;
+  }
+
+  .chip{
+    display:inline-block; margin-top:20px;
+    background:var(--chip-bg);
+    border-left:3px solid var(--gold);
+    padding:7px 14px 7px 12px;
+    border-radius:2px;
+    font-size:13px; line-height:1.35; letter-spacing:.6px;
+    color:#6f6a5d;
+  }
+  .chip b{color:var(--navy); font-weight:700; letter-spacing:1px;}
+
+  table{
+    width:100%; margin-top:14px;
+    border-collapse:separate; border-spacing:0;
+    border:1px solid var(--line-strong);
+    border-radius:2px;
+    table-layout:fixed;
+    overflow:hidden;
+  }
+  col.c1{width:64px;}
+  col.c2{width:196px;}
+  col.c3{width:142px;}
+  col.c4{width:142px;}
+  col.c5{width:156px;}
+
+  thead th{
+    background:var(--navy);
+    color:#ffffff;
+    font-size:14px; font-weight:700; letter-spacing:1.2px;
+    height:46px; text-align:center; vertical-align:middle;
+    border-right:1px solid rgba(255,255,255,.14);
+  }
+  thead th:last-child{border-right:none;}
+
+  tbody td{
+    height:34px; text-align:center; vertical-align:middle;
+    font-size:14px; letter-spacing:.4px;
+    border-bottom:1px solid var(--line);
+    border-right:1px solid var(--line-v);
+    background:#ffffff;
+  }
+  tbody td:last-child{border-right:none;}
+  tbody tr:last-child td{border-bottom:none;}
+
+  tbody td.idx{ font-size:12.5px; color:var(--muted-2); }
+  tbody td.cat{ font-weight:700; color:var(--navy); font-size:14.5px; letter-spacing:1px; }
+  tbody td.num{ color:var(--text); }
+  tbody td.pct{ color:var(--text); font-variant-numeric:tabular-nums; }
+
+  tbody tr.total td{
+    background:var(--cream);
+    border-top:1px solid var(--line-strong);
+    font-weight:800; color:var(--navy-deep); font-size:14.5px;
+  }
+  tbody tr.total td.label{ letter-spacing:4px; text-indent:4px; }
+  tbody tr.total td.num,
+  tbody tr.total td.pct{ font-variant-numeric:tabular-nums; }
+
+  .notes{
+    margin-top:16px;
+    background:var(--cream-soft);
+    border-left:4px solid var(--gold);
+    border-radius:2px;
+    padding:15px 20px 16px;
+  }
+  .notes .hd{
+    font-size:13.5px; font-weight:700; color:var(--navy);
+    letter-spacing:1px; margin-bottom:7px;
+  }
+  .notes ol{ list-style:none; }
+  .notes li{
+    font-size:12.8px; line-height:1.95; color:#6b6659;
+    letter-spacing:.3px; padding-left:20px; position:relative;
+  }
+  .notes li .n{
+    position:absolute; left:0; top:0;
+    color:var(--muted-2); font-variant-numeric:tabular-nums;
+  }
+  .notes em{
+    font-style:normal; color:var(--gold-text); font-weight:700;
+    letter-spacing:.2px;
+  }
+
+  @page{ size:780px auto; margin:0; }
+  @media print{ body{padding:38px 40px 34px;} }
+</style>
+</head>
+<body>
+
+<h1 class="title" id="tTitle"></h1>
+<p class="subtitle" id="tSub"></p>
+<div class="chip" id="tChip"></div>
+
+<table>
+  <colgroup>
+    <col class="c1"><col class="c2"><col class="c3"><col class="c4"><col class="c5">
+  </colgroup>
+  <thead><tr id="tHead"></tr></thead>
+  <tbody id="tBody"></tbody>
+</table>
+
+<div class="notes">
+  <div class="hd">说明：</div>
+  <ol id="tNotes"></ol>
+</div>
+
+<script>
+/* ================= 数据区（要换数据只改这里） =================
+   本表数据来源：车拍拍生产库 hg_vehicle（create_time 落在 2025 全年）
+   维度：按省份区域分布。上拍数量 = 该省累计上拍车辆；成交数量 = 该省累计成交车辆。 */
+const DATA = {
+  title:    '车辆区域分布统计表',
+  subtitle: '各省份车辆上拍数量与成交分布',
+  scopeLabel: '统计口径：',
+  scopeValue: '上拍数量 / 成交数量',
+  head: ['序号', '省份', '上拍数量', '成交数量', '成交数量占比'],
+
+  // 行：ratio 留空则按 成交数量/合计成交数量 自动算
+  rows: [
+    { cat: '湖北', cnt: 138, deal: 110, ratio: '27.50%' },
+    { cat: '湖南', cnt: 85,  deal: 65,  ratio: '16.25%' },
+    { cat: '河南', cnt: 84,  deal: 69,  ratio: '17.25%' },
+    { cat: '江西', cnt: 74,  deal: 61,  ratio: '15.25%' },
+    { cat: '四川', cnt: 64,  deal: 52,  ratio: '13.00%' },
+    { cat: '广东', cnt: 20,  deal: 14,  ratio: '3.50%'  },
+    { cat: '江苏', cnt: 11,  deal: 10,  ratio: '2.50%'  },
+    { cat: '福建', cnt: 9,   deal: 7,   ratio: '1.75%'  },
+    { cat: '浙江', cnt: 8,   deal: 6,   ratio: '1.50%'  },
+    { cat: '山东', cnt: 7,   deal: 6,   ratio: '1.50%'  }
+  ],
+
+  // 合计行：label 横跨「序号 + 省份」两列
+  total: { label: '合计', cnt: 500, deal: 400, ratio: '100.00%' },
+
+  // 说明：<em>…</em> 内的文字会渲染成金色高亮
+  notes: [
+    '上拍数量：该省份累计上拍车辆数，合计 <em>500 台</em>为各省份之和。',
+    '成交数量：该省份累计线上成交车辆数，合计 <em>400 台</em>为各省份之和。',
+    '成交数量占比 <em>= 该省份成交数量 ÷ 合计成交数量（400）</em>，保留两位小数。',
+    '数据范围为 2025 全年（2025-01-01 至 2025-12-31）注入车辆，按上拍数量降序排列；<em>湖北 / 湖南 / 河南 / 江西 / 四川</em>为业务重点区域，合计占比近九成。'
+  ]
+};
+/* ============================================================ */
+
+document.getElementById('tTitle').textContent = DATA.title;
+document.getElementById('tSub').textContent   = DATA.subtitle;
+document.getElementById('tChip').innerHTML    = DATA.scopeLabel + '<b>' + DATA.scopeValue + '</b>';
+
+document.getElementById('tHead').innerHTML =
+  DATA.head.map(h => '<th>' + h + '</th>').join('');
+
+const sum = DATA.rows.reduce((a, r) => a + (r.deal || 0), 0) || DATA.total.deal || 1;
+let html = DATA.rows.map((r, i) => {
+  const pct = (r.ratio !== undefined && r.ratio !== '')
+    ? r.ratio
+    : (r.deal / sum * 100).toFixed(2) + '%';
+  return '<tr>'
+    + '<td class="idx">' + (i + 1) + '</td>'
+    + '<td class="cat">' + r.cat + '</td>'
+    + '<td class="num">' + r.cnt + '</td>'
+    + '<td class="num">' + r.deal + '</td>'
+    + '<td class="pct">' + pct + '</td>'
+    + '</tr>';
+}).join('');
+
+const t = DATA.total;
+html += '<tr class="total">'
+  + '<td class="label" colspan="2">' + t.label + '</td>'
+  + '<td class="num">' + t.cnt + '</td>'
+  + '<td class="num">' + t.deal + '</td>'
+  + '<td class="pct">' + t.ratio + '</td>'
+  + '</tr>';
+document.getElementById('tBody').innerHTML = html;
+
+document.getElementById('tNotes').innerHTML = DATA.notes
+  .map((n, i) => '<li><span class="n">' + (i + 1) + '.</span>' + n + '</li>').join('');
+</script>
+</body>
+</html>

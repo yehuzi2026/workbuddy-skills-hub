@@ -1,0 +1,17 @@
+name: Use Case Share
+description: 分享你的使用场景或合作意向
+labels: [discussion]
+body:
+  - type: textarea
+    attributes:
+      label: 你的使用场景
+      description: 欢迎分享你用本工具处理的典型项目类型(**请勿包含任何真实招标信息、公司名称、金额**)
+    validations:
+      required: true
+  - type: checkboxes
+    attributes:
+      label: 合作意向
+      options:
+        - label: 我愿意提供匿名反馈
+        - label: 我想参与贡献话术库或模板
+        - label: 我是学术/产业研究者,想深入交流

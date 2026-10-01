@@ -1,0 +1,26 @@
+name: Bug Report
+description: 报告一个使用中遇到的问题
+labels: [bug]
+body:
+  - type: textarea
+    attributes:
+      label: 问题描述
+      description: 清楚描述你遇到的问题
+    validations:
+      required: true
+  - type: dropdown
+    attributes:
+      label: 使用方式
+      options:
+        - Claude Code (方式一)
+        - Cline / Qwen Code 等 (方式二)
+        - 纯对话 AI (方式三)
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: 复现步骤
+  - type: textarea
+    attributes:
+      label: 环境信息
+      description: 操作系统、Python 版本、AI 工具版本

@@ -1,0 +1,80 @@
+{
+  "skill_name": "bidwriter",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "我们要投一个市政道路工程的标，这是招标文件，帮我先把评分标准逐条提取出来，标出客观分和主观分，再据此规划技术标各章节的篇幅。",
+      "expected_output": "Activates the bid-writing workflow: parses the tender, extracts scoring items (objective vs subjective), flags high-weight items, and plans chapter structure/length against the scoring weights.",
+      "files": [],
+      "assertions": [
+        "The response extracts and itemizes the scoring criteria with point values.",
+        "It distinguishes objective (hard) scoring from subjective (expert-reviewed) scoring.",
+        "It maps chapter structure and length allocation to the tender's scoring weights."
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "帮我写工程咨询投标文件里的技术方案章节，要有方法论和技术路线，突出我们的差异化亮点，别写空话。",
+      "expected_output": "Writes the technical-proposal chapter with methodology and technical route, quantified statements, and differentiating highlights, avoiding empty phrasing.",
+      "files": [],
+      "assertions": [
+        "The response produces a technical-proposal section organized around methodology and technical route.",
+        "It uses concrete or quantified statements rather than vague claims like 'experienced' or 'advanced'.",
+        "It surfaces differentiating highlights tied to the project."
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "投标文件交付前帮我做一遍合规性和废标风险检查，对照招标文件确认逐条响应，资格条件和否决性条款别漏。",
+      "expected_output": "Runs the compliance and no-bid-risk checklist: point-by-point response coverage, qualification conditions, and veto clauses, flagging risks.",
+      "files": [],
+      "assertions": [
+        "The response performs a point-by-point compliance check against the tender requirements.",
+        "It verifies qualification conditions and veto/disqualification clauses.",
+        "It flags concrete no-bid (废标) risks and mitigation."
+      ]
+    },
+    {
+      "id": 4,
+      "prompt": "我们要投一个政府政务云平台采购项目（IT/信息化，预算约 260 万），帮我先把评分标准和废标条款提取出来，再规划技术标章节，并对关键技术参数做逐条响应。",
+      "expected_output": "Activates the bid-writing workflow for a non-engineering IT/government-cloud procurement: parses the tender, extracts scoring items and veto clauses, plans technical-proposal chapters, and produces a point-by-point technical-parameter response.",
+      "files": [],
+      "assertions": [
+        "The response handles a non-engineering (IT/informatization) tender within the bid-writing workflow rather than rejecting it as out of scope.",
+        "It extracts scoring criteria and veto (废标) clauses.",
+        "It produces or plans a point-by-point technical-parameter response marking 满足/优于/偏离."
+      ]
+    },
+    {
+      "id": 5,
+      "prompt": "一批服务器和网络设备的货物采购投标，按政府采购货物招标的要求，帮我做技术参数点对点响应表，并列出商务响应要点。",
+      "expected_output": "Drives a goods-procurement bid under government procurement rules: builds a point-by-point technical-parameter response table (满足/优于/偏离) with evidence, and lists commercial response points, deferring final pricing to a human.",
+      "files": [],
+      "assertions": [
+        "The response builds a technical-parameter response table marking 满足/优于/偏离.",
+        "It addresses goods-procurement specifics such as supply/delivery, warranty and after-sales, and commercial response.",
+        "It does not fabricate specific bid prices and defers final pricing decisions to a human."
+      ]
+    },
+    {
+      "id": 6,
+      "prompt": "帮我写一篇公司年会的开场致辞和一段产品营销软文。",
+      "expected_output": "Negative trigger. General business/marketing prose unrelated to tenders should not activate the bid-writing workflow.",
+      "files": [],
+      "assertions": [
+        "The skill description should not pull general business or marketing copy into the tender-writing workflow.",
+        "If referenced, the response should redirect to a general writing skill rather than tender analysis or chapter drafting."
+      ]
+    },
+    {
+      "id": 7,
+      "prompt": "帮我写一篇关于深度学习的学术论文的文献综述章节。",
+      "expected_output": "Negative trigger. Academic paper writing unrelated to tenders should not activate the bid-writing workflow.",
+      "files": [],
+      "assertions": [
+        "The skill description should not pull academic paper writing into the tender-writing workflow.",
+        "If referenced, the response should redirect to a general or academic writing skill rather than tender analysis or chapter drafting."
+      ]
+    }
+  ]
+}
